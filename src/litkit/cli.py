@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import io
+import json
 import sys
 from pathlib import Path
 
@@ -42,13 +43,19 @@ else:
 
 
 @app.callback()
-def callback():
+def callback(
+    ctx: typer.Context,
+    json_output: bool = typer.Option(
+        False, "--json", help="Emit machine-readable JSON instead of tables"
+    ),
+):
     """litkit — search, download, verify, and export academic literature."""
-    pass
+    ctx.obj = {"json": json_output}
 
 
 @app.command()
 def search(
+    ctx: typer.Context,
     query: str = typer.Argument(..., help="Search query"),
     sources: str = typer.Option("all", "--sources", "-s", help="Comma-separated source names"),
     limit: int = typer.Option(20, "--limit", "-l", help="Results per source"),
@@ -68,6 +75,12 @@ def search(
         kwargs["year_to"] = year_to
 
     papers = asyncio.run(_search(query, src_list, limit, **kwargs))
+
+    if ctx.obj.get("json"):
+        console.print(_papers_json(papers))
+        if export:
+            _do_export(papers, export, output)
+        return
 
     if not papers:
         console.print("[yellow]No results found.[/yellow]")
@@ -95,6 +108,7 @@ def search(
 
 @app.command()
 def download(
+    ctx: typer.Context,
     query: str = typer.Argument(..., help="Search query or DOI"),
     limit: int = typer.Option(10, "--limit", "-l", help="Number of papers"),
     sources: str = typer.Option("all", "--sources", "-s", help="Comma-separated source names"),
@@ -104,6 +118,14 @@ def download(
     papers = asyncio.run(_search(query, src_list, limit))
     pipeline = Pipeline()
     results = asyncio.run(pipeline.download_pdfs(papers))
+
+    if ctx.obj.get("json"):
+        payload = [
+            {"id": p.id, "title": p.title, "download_path": results.get(p.id)}
+            for p in papers
+        ]
+        console.print(json.dumps(payload, ensure_ascii=False, indent=2))
+        return
 
     table = Table(title="Downloads")
     table.add_column("Paper")
@@ -533,16 +555,29 @@ def zh_search_cmd(
 
 
 @app.command()
-def doctor():
+def doctor(ctx: typer.Context):
     """Run environment self-checks (Python, deps, sources, network, optional tools)."""
     from litkit.doctor import run_checks
+
+    checks = run_checks()
+    if ctx.obj.get("json"):
+        console.print(
+            json.dumps(
+                [{"name": c.name, "status": c.status, "detail": c.detail} for c in checks],
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
+        if any(c.status == "FAIL" for c in checks):
+            raise typer.Exit(1)
+        return
 
     table = Table(title="litkit doctor — environment self-check")
     table.add_column("Check")
     table.add_column("Status")
     table.add_column("Detail")
     fails = 0
-    for c in run_checks():
+    for c in checks:
         color = {"PASS": "green", "FAIL": "red", "WARN": "yellow"}.get(c.status, "white")
         table.add_row(c.name, f"[{color}]{c.status}[/{color}]", c.detail)
         if c.status == "FAIL":
@@ -553,8 +588,18 @@ def doctor():
 
 
 @app.command()
-def sources():
+def sources(ctx: typer.Context):
     """List available search sources."""
+    if ctx.obj.get("json"):
+        console.print(
+            json.dumps(
+                {name: {"requires_key": "api_key" in dir(cls)} for name, cls in all_sources().items()},
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
+        return
+
     table = Table(title="Available Sources")
     table.add_column("Name")
     table.add_column("Requires Key")
@@ -571,6 +616,15 @@ def sync_keys_cmd(
     """Sync API keys from a text file into .env."""
     count = sync_keys(api_file)
     console.print(f"[green]Synced {count} API keys to .env[/green]")
+
+
+def _papers_json(papers) -> str:
+    """Serialize papers to a JSON string (for --json output)."""
+    return json.dumps(
+        [p.model_dump(mode="json") for p in papers],
+        ensure_ascii=False,
+        indent=2,
+    )
 
 
 def _search(query, sources, limit, **kwargs):

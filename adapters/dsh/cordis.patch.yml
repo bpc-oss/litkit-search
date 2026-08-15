@@ -1,0 +1,5 @@
+# litkit dsh adapter bundle layer — applied automatically when a profile lists
+# this package in dsh.profile.bundles (declared via dsh.bundle.patch).
+- insert:
+    - id: litkit
+      name: '@bpshil/litkit-dsh'

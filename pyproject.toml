@@ -64,6 +64,7 @@ Documentation = "https://github.com/bpshil/litkit-search/blob/main/README.md"
 
 [project.scripts]
 litkit = "litkit.cli:app"
+litkit-mcp = "litkit_mcp.server:main"
 
 [tool.ruff]
 target-version = "py311"
@@ -125,11 +126,12 @@ requires = ["hatchling>=1,<2"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/litkit"]
+packages = ["src/litkit", "adapters/mcp/litkit_mcp"]
 
 [tool.hatch.build.targets.sdist]
 include = [
     "src/litkit/**",
+    "adapters/mcp/**",
     "README.md",
     "LICENSE",
     "CHANGELOG.md",
@@ -139,7 +141,7 @@ include = [
 exclude = [
     "_prep/**",
     "tests/**",
-    "adapters/**",
+    "adapters/dsh/**",
     "scripts/**",
     ".github/**",
     ".venv-test/**",
