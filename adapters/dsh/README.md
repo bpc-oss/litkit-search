@@ -12,12 +12,16 @@ DeepSeek Harness (dsh) plugin adapter for [litkit](../README.md) — registers
 ## Install
 
 ```bash
-# From the monorepo (local):
-dsh plugin --profile web add "E:\ai-files\litkit-open\adapters\dsh"
+# Canonical (published on npm):
+dsh plugin --profile web add @bpshil/litkit-dsh
 
-# From GitHub (after release):
-dsh plugin --profile web add "git+https://github.com/bpc-oss/litkit-search.git#subdirectory=adapters/dsh"
+# Local development (from the monorepo checkout):
+dsh plugin --profile web add "E:\ai-files\litkit-open\adapters\dsh"
 ```
+
+> pnpm (used by `dsh plugin`) does not support `#subdirectory=` git fragments,
+> so git-URL installs of this monorepo subdirectory are not supported — use the
+> npm package or a local path.
 
 Restart `dsh web`. The model then sees `litkit_*` tools; guidance lives in
 [SKILL.md](SKILL.md).

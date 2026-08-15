@@ -18,8 +18,8 @@ profile (web / headless / custom).
 Prerequisites: `litkit` CLI on PATH (`pip install litkit-search`), Node ≥ 20.
 
 ```bash
-# After the monorepo is published on GitHub:
-dsh plugin --profile web add "git+https://github.com/bpc-oss/litkit-search.git#subdirectory=adapters/dsh"
+# Canonical (adapter published on npm):
+dsh plugin --profile web add @bpshil/litkit-dsh
 ```
 
 Local development (from the monorepo checkout):
@@ -28,6 +28,11 @@ Local development (from the monorepo checkout):
 dsh plugin --profile <test-profile> add "E:\ai-files\litkit-open\adapters\dsh"
 dsh --profile <test-profile> --dump-config      # confirm the litkit layer mounted
 ```
+
+> **Note on git-URL installs**: pnpm (the engine behind `dsh plugin`) does not
+> support the `#subdirectory=` fragment for git dependencies, so
+> `git+https://...#subdirectory=adapters/dsh` is **not** a supported install
+> path. Use the npm package or a local `add <path>` instead.
 
 Restart `dsh web`, then ask e.g. *"search literature for retrieval-augmented
 generation with litkit"*.
