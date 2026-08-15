@@ -533,6 +533,26 @@ def zh_search_cmd(
 
 
 @app.command()
+def doctor():
+    """Run environment self-checks (Python, deps, sources, network, optional tools)."""
+    from litkit.doctor import run_checks
+
+    table = Table(title="litkit doctor — environment self-check")
+    table.add_column("Check")
+    table.add_column("Status")
+    table.add_column("Detail")
+    fails = 0
+    for c in run_checks():
+        color = {"PASS": "green", "FAIL": "red", "WARN": "yellow"}.get(c.status, "white")
+        table.add_row(c.name, f"[{color}]{c.status}[/{color}]", c.detail)
+        if c.status == "FAIL":
+            fails += 1
+    console.print(table)
+    if fails:
+        raise typer.Exit(1)
+
+
+@app.command()
 def sources():
     """List available search sources."""
     table = Table(title="Available Sources")

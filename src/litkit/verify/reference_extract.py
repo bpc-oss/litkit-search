@@ -7,6 +7,7 @@ Fallback: anystyle (CLI, plain text).
 from __future__ import annotations
 
 import re
+import shutil
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -40,7 +41,19 @@ def extract_from_docx(docx_path: str | Path) -> list[Paper]:
 
 
 def _extract_with_anystyle(file_path: str) -> list[Paper]:
-    """Use anystyle CLI to parse references."""
+    """Use anystyle CLI to parse references.
+
+    Raises RuntimeError with install guidance when anystyle is missing or
+    fails, instead of silently returning an empty list (which would make a
+    citation audit report "0 references" without any explanation).
+    """
+    if shutil.which("anystyle") is None:
+        raise RuntimeError(
+            "anystyle CLI not found. Install it with: gem install anystyle "
+            "(see https://github.com/inukshuk/anystyle). It is required to "
+            "extract references from .docx files (and PDFs when GROBID is "
+            "unavailable)."
+        )
     try:
         result = subprocess.run(
             ["anystyle", "parse", file_path, "--stdout"],
@@ -48,18 +61,28 @@ def _extract_with_anystyle(file_path: str) -> list[Paper]:
             text=True,
             timeout=30,
         )
-        if result.returncode != 0:
-            return []
-        return _parse_anystyle_output(result.stdout)
-    except (FileNotFoundError, subprocess.TimeoutExpired):
-        return []
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError(
+            "anystyle timed out while parsing references "
+            f"(file: {file_path}). Try again or use GROBID for PDFs."
+        ) from exc
+    if result.returncode != 0:
+        raise RuntimeError(
+            "anystyle failed to parse references "
+            f"(exit {result.returncode}): {(result.stderr or result.stdout or '').strip()[:500]}"
+        )
+    return _parse_anystyle_output(result.stdout)
 
 
 def _parse_anystyle_output(output: str) -> list[Paper]:
     try:
         refs = yaml.safe_load(output)
-    except yaml.YAMLError:
-        return []
+    except yaml.YAMLError as exc:
+        raise RuntimeError(
+            "anystyle produced output that could not be parsed as YAML; "
+            "this may indicate a corrupted document or an anystyle version "
+            "incompatibility."
+        ) from exc
     if not isinstance(refs, list):
         refs = [refs]
     return [p for r in refs if (p := _anystyle_ref_to_paper(r)) is not None]
