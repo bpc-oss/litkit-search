@@ -69,11 +69,6 @@ jobs:
           .venv-smoke/bin/litkit --help >/dev/null
           .venv-smoke/bin/litkit sources | grep -q arxiv
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/
-
   e2e:
     name: e2e (main only)
     runs-on: ubuntu-latest
