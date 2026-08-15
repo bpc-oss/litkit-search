@@ -25,7 +25,7 @@ pip install litkit-search
 ### B. From source (development / latest)
 
 ```bash
-git clone https://github.com/bpshil/litkit-search.git
+git clone https://github.com/bpc-oss/litkit-search.git
 cd litkit-search
 python -m venv .venv
 # Windows: .venv\Scripts\activate   |   macOS/Linux: source .venv/bin/activate

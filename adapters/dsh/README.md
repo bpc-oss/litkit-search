@@ -16,7 +16,7 @@ DeepSeek Harness (dsh) plugin adapter for [litkit](../README.md) — registers
 dsh plugin --profile web add "E:\ai-files\litkit-open\adapters\dsh"
 
 # From GitHub (after release):
-dsh plugin --profile web add "git+https://github.com/bpshil/litkit-search.git#subdirectory=adapters/dsh"
+dsh plugin --profile web add "git+https://github.com/bpc-oss/litkit-search.git#subdirectory=adapters/dsh"
 ```
 
 Restart `dsh web`. The model then sees `litkit_*` tools; guidance lives in

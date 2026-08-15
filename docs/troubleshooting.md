@@ -30,7 +30,7 @@
 
 ## Still stuck?
 
-Open an issue at https://github.com/bpshil/litkit-search/issues with:
+Open an issue at https://github.com/bpc-oss/litkit-search/issues with:
 
 1. `litkit doctor` output
 2. OS + Python version

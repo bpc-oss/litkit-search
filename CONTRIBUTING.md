@@ -9,14 +9,14 @@ participating you agree to abide by its terms.
 
 ## How to contribute
 
-- **Report bugs** → open an [issue](https://github.com/bpshil/litkit-search/issues/new?template=bug_report.md).
+- **Report bugs** → open an [issue](https://github.com/bpc-oss/litkit-search/issues/new?template=bug_report.md).
 - **Request features / new sources** → feature request issue (template included).
 - **Fix / improve** → fork, branch, commit, open a pull request.
 
 ## Development setup
 
 ```bash
-git clone https://github.com/bpshil/litkit-search.git
+git clone https://github.com/bpc-oss/litkit-search.git
 cd litkit-search
 python -m venv .venv
 # Windows: .venv\Scripts\activate | macOS/Linux: source .venv/bin/activate

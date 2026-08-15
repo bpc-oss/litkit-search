@@ -13,7 +13,7 @@ Please **do not open a public issue** for security vulnerabilities. Report
 privately instead:
 
 - GitHub private vulnerability reporting:
-  https://github.com/bpshil/litkit-search/security/advisories/new
+  https://github.com/bpc-oss/litkit-search/security/advisories/new
 - Or email the maintainers (see the git log / PyPI metadata) with the subject
   `[litkit-security] ...`.
 

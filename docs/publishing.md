@@ -34,7 +34,7 @@
 Two options (pick one):
 
 - **Trusted publishing (recommended)**: in PyPI project settings
-  (`litkit-search`) add a pending publisher for `github.com/bpshil/litkit-search`,
+  (`litkit-search`) add a pending publisher for `github.com/bpc-oss/litkit-search`,
   workflow `release.yml`, environment `release`. No token stored.
 - **API token**: create a PyPI token and store it as the GitHub Actions secret
   `PYPI_API_TOKEN`, then switch `release.yml` to use it

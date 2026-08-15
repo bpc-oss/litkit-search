@@ -3,7 +3,7 @@
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/litkit-search)](https://pypi.org/project/litkit-search/)
-[![CI](https://github.com/bpshil/litkit-search/actions/workflows/ci.yml/badge.svg)](https://github.com/bpshil/litkit-search/actions)
+[![CI](https://github.com/bpc-oss/litkit-search/actions/workflows/ci.yml/badge.svg)](https://github.com/bpc-oss/litkit-search/actions)
 
 Search, download, verify, and export scholarly literature from **25+ sources**
 with one CLI. Bulk retrieval with deduplication, citation audit for manuscripts,
@@ -36,7 +36,7 @@ a multi-strategy PDF download chain, and agent-client integrations (MCP + DSH).
 # 1. Install (Python >= 3.11)
 pip install litkit-search          # after PyPI release
 # or from source:
-#   git clone https://github.com/bpshil/litkit-search && cd litkit-search
+#   git clone https://github.com/bpc-oss/litkit-search && cd litkit-search
 #   pip install .
 
 # 2. (Optional) Configure API keys — most sources need none
@@ -96,7 +96,7 @@ litkit speaks MCP, so any MCP-capable agent client can use it:
 
 ```bash
 # dsh install (after release):
-dsh plugin --profile web add "git+https://github.com/bpshil/litkit-search.git#subdirectory=adapters/dsh"
+dsh plugin --profile web add "git+https://github.com/bpc-oss/litkit-search.git#subdirectory=adapters/dsh"
 ```
 
 ## Legal notice

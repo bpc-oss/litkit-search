@@ -19,7 +19,7 @@ Prerequisites: `litkit` CLI on PATH (`pip install litkit-search`), Node ≥ 20.
 
 ```bash
 # After the monorepo is published on GitHub:
-dsh plugin --profile web add "git+https://github.com/bpshil/litkit-search.git#subdirectory=adapters/dsh"
+dsh plugin --profile web add "git+https://github.com/bpc-oss/litkit-search.git#subdirectory=adapters/dsh"
 ```
 
 Local development (from the monorepo checkout):
