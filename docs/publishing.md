@@ -8,8 +8,8 @@
    surprising.
 3. **Working tree clean**: `git status --porcelain` → empty.
 4. **Sensitive-word scan** (personal data):
-   `grep -rniE "bpshil@qq|Administrator|Desktop\\\\|@qq\\.com" --exclude-dir={_prep,.venv-test,.git} .`
-   → no hits.
+   `grep -rniE "your-name|Administrator|Desktop\\\\|@qq\\.com|@gmail\\.com" --exclude-dir={_prep,.venv-test,.git} .`
+   → no hits (adjust name/email patterns to the maintainer's own).
 5. **`.env.example` tracked, `.env` not**: `git ls-files | grep env` shows only
    `.env.example`.
 6. **Build**: `uv build` → wheel + sdist; clean venv install of the wheel;
