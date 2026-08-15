@@ -1,4 +1,4 @@
-﻿"""OpenCitations â€” citation graph data.
+"""OpenCitations â€” citation graph data.
 
 Provides citation counts and reference lists via the COCI index.
 https://opencitations.net/
@@ -59,4 +59,3 @@ class OpenCitations(SearchSource):
             )
             for c in data
         ]
-

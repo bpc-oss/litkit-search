@@ -1,7 +1,8 @@
-﻿"""RIS exporter — EndNote-compatible format.
+"""RIS exporter — EndNote-compatible format.
 
 Fields: TY, AU, TI, JO, JF, VL, IS, SP, EP, PY, DO, UR, AB, KW, SN, PB, LA, N1, ER
 """
+
 from __future__ import annotations
 
 import io
@@ -11,9 +12,16 @@ from typing import TextIO
 from litkit.core.models import Paper
 
 _TYPE_MAP = {
-    "journal": "JOUR", "conference": "CONF", "book": "BOOK",
-    "book-chapter": "CHAP", "report": "RPT", "thesis": "THES",
-    "preprint": "JOUR", "dataset": "DATA", "software": "COMP", "other": "GEN",
+    "journal": "JOUR",
+    "conference": "CONF",
+    "book": "BOOK",
+    "book-chapter": "CHAP",
+    "report": "RPT",
+    "thesis": "THES",
+    "preprint": "JOUR",
+    "dataset": "DATA",
+    "software": "COMP",
+    "other": "GEN",
 }
 
 
@@ -71,9 +79,7 @@ def write_ris(papers: list[Paper], file: TextIO) -> None:
         if paper.language:
             file.write(f"LA  - {paper.language}\n")
         notes = "; ".join(
-            f"{k}:{v}"
-            for k, v in [("OA", paper.oa_status), ("Source", paper.source)]
-            if v
+            f"{k}:{v}" for k, v in [("OA", paper.oa_status), ("Source", paper.source)] if v
         )
         if notes:
             file.write(f"N1  - {notes}\n")

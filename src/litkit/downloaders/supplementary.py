@@ -42,12 +42,15 @@ _XML_DECL_RE = re.compile(r"<\?xml\s+.*?\?>")
 
 try:
     from playwright.async_api import async_playwright
+
     HAS_PLAYWRIGHT = True
 except ImportError:
     HAS_PLAYWRIGHT = False
 
+
 def _find_free_port() -> int:
     import socket
+
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind(("127.0.0.1", 0))
         return s.getsockname()[1]
@@ -55,6 +58,7 @@ def _find_free_port() -> int:
 
 async def _wait_for_cdp(port: int, timeout: float = 15.0) -> None:
     import urllib.request
+
     deadline = time.time() + timeout
     while time.time() < deadline:
         try:
@@ -64,7 +68,9 @@ async def _wait_for_cdp(port: int, timeout: float = 15.0) -> None:
             await asyncio.sleep(0.5)
     raise TimeoutError(f"Chrome CDP not ready on port {port} after {timeout}s")
 
+
 # ── Constants ──────────────────────────────────────────────────────────────────
+
 
 # Supplementary cache root (override with LITKIT_CACHE_DIR for tests/CI).
 def _cache_root() -> Path:
@@ -75,15 +81,47 @@ def _cache_root() -> Path:
     root.mkdir(parents=True, exist_ok=True)
     return root
 
+
 # Recognised supplementary file extensions
 _SUPPL_EXTENSIONS: set[str] = {
-    ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx",
-    ".zip", ".tar", ".gz", ".tgz", ".rar", ".7z",
-    ".csv", ".tsv", ".txt", ".xml", ".json",
-    ".fasta", ".fastq", ".gb", ".sdf", ".mol", ".pdb",
-    ".tif", ".tiff", ".png", ".jpg", ".jpeg", ".eps", ".svg",
-    ".mov", ".avi", ".mp4", ".wmv",
-    ".html", ".htm", ".shtml",
+    ".pdf",
+    ".doc",
+    ".docx",
+    ".xls",
+    ".xlsx",
+    ".ppt",
+    ".pptx",
+    ".zip",
+    ".tar",
+    ".gz",
+    ".tgz",
+    ".rar",
+    ".7z",
+    ".csv",
+    ".tsv",
+    ".txt",
+    ".xml",
+    ".json",
+    ".fasta",
+    ".fastq",
+    ".gb",
+    ".sdf",
+    ".mol",
+    ".pdb",
+    ".tif",
+    ".tiff",
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".eps",
+    ".svg",
+    ".mov",
+    ".avi",
+    ".mp4",
+    ".wmv",
+    ".html",
+    ".htm",
+    ".shtml",
 }
 
 # Regex for detecting supplementary-related links/headings
@@ -172,10 +210,12 @@ _PUBLISHER_SUPPL_PATTERNS: dict[str, list[str]] = {
 
 # ── Publisher-specific supplementary config (for Chrome CDP) ─────────────────
 
+
 @dataclass
 class _SupplPublisherConfig:
     name: str
     doi_prefixes: tuple[str, ...]
+
 
 _SUPPL_PUBLISHERS: tuple[_SupplPublisherConfig, ...] = (
     _SupplPublisherConfig(name="sciencedirect", doi_prefixes=("10.1016/",)),
@@ -204,25 +244,24 @@ def _detect_suppl_publisher(doi: str) -> _SupplPublisherConfig | None:
 
 _SUPPL_SECTION_SELECTORS: dict[str, str] = {
     "sciencedirect": "section[id$='-supplementary'], section[id*='supplementary'], "
-                     "div[id*='supplementary'], #supplementary-material, "
-                     "div.supplementary, section[class*='supplementary']",
-    "nature":       "section[data-track*='supplementary'], #Supplementary-Information-section, "
-                    "div[class*='supplementary'], #supplementary-information-section",
-    "wiley":        "div[class*='supporting'], section[class*='supporting'], "
-                    "div.section[aria-labelledby*='supporting']",
-    "springer":     "div[class*='ESM'], section[class*='Supplementary'], "
-                    "div[class*='supplementary-material']",
-    "mdpi":         "section[class*='supplementary'], #html-s1, "
-                    "div[class*='supplementary-material']",
-    "frontiers":    "section[class*='Supplementary'], div[class*='supplementary']",
-    "acs":          "div[class*='supplementary'], section[class*='supporting'], "
-                    "#supplementary-material",
+    "div[id*='supplementary'], #supplementary-material, "
+    "div.supplementary, section[class*='supplementary']",
+    "nature": "section[data-track*='supplementary'], #Supplementary-Information-section, "
+    "div[class*='supplementary'], #supplementary-information-section",
+    "wiley": "div[class*='supporting'], section[class*='supporting'], "
+    "div.section[aria-labelledby*='supporting']",
+    "springer": "div[class*='ESM'], section[class*='Supplementary'], "
+    "div[class*='supplementary-material']",
+    "mdpi": "section[class*='supplementary'], #html-s1, div[class*='supplementary-material']",
+    "frontiers": "section[class*='Supplementary'], div[class*='supplementary']",
+    "acs": "div[class*='supplementary'], section[class*='supporting'], #supplementary-material",
     "taylor_francis": "div[class*='supplementary'], section[class*='supplementary']",
-    "sage":         "div[class*='supplementary'], section[class*='supplementary']",
-    "pnas":         "div[class*='supplementary'], #supplementary-materials",
+    "sage": "div[class*='supplementary'], section[class*='supplementary']",
+    "pnas": "div[class*='supplementary'], #supplementary-materials",
 }
 
 # ── Public helpers ─────────────────────────────────────────────────────────────
+
 
 def _cache_dir(paper: Paper) -> Path:
     """Return the directory for this paper's supplementary materials."""
@@ -248,7 +287,9 @@ def cached_path(paper: Paper) -> Path | None:
         return d
     return None
 
+
 # ── Helper functions ───────────────────────────────────────────────────────────
+
 
 def _doi_path(doi: str) -> str:
     """Extract the path part of a DOI (everything after the first slash)."""
@@ -264,7 +305,7 @@ def _safe_filename(url: str, suffix: str) -> str:
     else:
         # Remove any existing extension that matches the suffix
         if name.endswith(suffix):
-            name = name[:-len(suffix)]
+            name = name[: -len(suffix)]
         name += suffix
     # Replace non-alphanumeric chars (except dot/hyphen/underscore)
     name = re.sub(r"[^\w\.\-]", "_", name)
@@ -318,11 +359,7 @@ def _save_response(response: httpx.Response, dest_dir: Path) -> Path | None:
 
     # Deduplicate: skip if identical content already exists
     for existing in dest_dir.iterdir():
-        if (
-            existing.is_file()
-            and existing.name != ".done"
-            and existing.stat().st_size == len(body)
-        ):
+        if existing.is_file() and existing.name != ".done" and existing.stat().st_size == len(body):
             try:
                 h = hashlib.sha256(existing.read_bytes()).hexdigest()
                 if h == body_hash:
@@ -343,7 +380,9 @@ def _save_response(response: httpx.Response, dest_dir: Path) -> Path | None:
     dest.write_bytes(body)
     return dest
 
+
 # ── Downloader ─────────────────────────────────────────────────────────────────
+
 
 class SupplementaryDownloader:
     """Download supplementary materials for a paper.
@@ -559,13 +598,20 @@ class SupplementaryDownloader:
         suppl_names = [
             f"{pmc_id_num}-suppl-{suffix}"
             for suffix in [
-                "Supplement.pdf", "supplement.pdf",
-                "Supplementary_data.pdf", "Supplementary_Data.xlsx",
-                "suppl_data.zip", "supplementary_material.pdf",
-                "Supplementary_Table.xlsx", "Supplementary_Table.pdf",
-                "Supplementary_Figure.pdf", "Supplementary_Figure.tif",
-                "Table_S1.xlsx", "Table_S2.xlsx",
-                "Figure_S1.tif", "Figure_S2.tif",
+                "Supplement.pdf",
+                "supplement.pdf",
+                "Supplementary_data.pdf",
+                "Supplementary_Data.xlsx",
+                "suppl_data.zip",
+                "supplementary_material.pdf",
+                "Supplementary_Table.xlsx",
+                "Supplementary_Table.pdf",
+                "Supplementary_Figure.pdf",
+                "Supplementary_Figure.tif",
+                "Table_S1.xlsx",
+                "Table_S2.xlsx",
+                "Figure_S1.tif",
+                "Figure_S2.tif",
             ]
         ]
         for name in suppl_names:
@@ -609,9 +655,8 @@ class SupplementaryDownloader:
                     elif hasattr(sibling, "find_all"):
                         for a_tag in sibling.find_all("a", href=True):
                             full_url = urljoin(str(resp.url), a_tag["href"])
-                            if (
-                                _ANCHOR_RE.search(a_tag.get_text())
-                                or _ANCHOR_RE.search(a_tag.get("href", ""))
+                            if _ANCHOR_RE.search(a_tag.get_text()) or _ANCHOR_RE.search(
+                                a_tag.get("href", "")
                             ):
                                 result = await self._fetch_one(full_url, dest)
                                 if result:
@@ -693,13 +738,15 @@ class SupplementaryDownloader:
             if check_text.startswith("<?xml"):
                 m = _XML_DECL_RE.match(check_text)
                 if m:
-                    check_text = check_text[m.end():].lstrip()
-            if check_text.startswith("<full-text-retrieval-response") or \
-               check_text.startswith("<soap:") or \
-               check_text.startswith("<error") or \
-               check_text.startswith("<serviceerror") or \
-               check_text.startswith("<atom:entry") or \
-               check_text.startswith("<rss"):
+                    check_text = check_text[m.end() :].lstrip()
+            if (
+                check_text.startswith("<full-text-retrieval-response")
+                or check_text.startswith("<soap:")
+                or check_text.startswith("<error")
+                or check_text.startswith("<serviceerror")
+                or check_text.startswith("<atom:entry")
+                or check_text.startswith("<rss")
+            ):
                 logger.debug("Skipped XML API response for %s", url)
                 return None
 
@@ -711,7 +758,6 @@ class SupplementaryDownloader:
             return None
 
         return _save_response(resp, dest)
-
 
     # ── Strategy 5: Chrome CDP ─────────────────────────────────────────
 
@@ -942,9 +988,11 @@ class SupplementaryDownloader:
         elif name == "nature":
             # Nature: find Supplementary Information button or section
             try:
-                for sel in ["a[data-track-action='supplementary info']",
-                            "a.c-article__supplementary-data",
-                            "a[href*='supplementary']"]:
+                for sel in [
+                    "a[data-track-action='supplementary info']",
+                    "a.c-article__supplementary-data",
+                    "a[href*='supplementary']",
+                ]:
                     btn = await page.query_selector(sel)
                     if btn:
                         href = await btn.get_attribute("href")
@@ -955,7 +1003,8 @@ class SupplementaryDownloader:
 
                 if count == 0:
                     sect = await page.query_selector(
-                        "#Supplementary-Information-section, div[class*='supplementary']")
+                        "#Supplementary-Information-section, div[class*='supplementary']"
+                    )
                     if sect:
                         links = await sect.evaluate("""(el) => {
                             const r = []; const v = new Set();
@@ -975,8 +1024,11 @@ class SupplementaryDownloader:
         elif name == "wiley":
             # Wiley: supporting information section + suppinfo URL
             try:
-                for sel in ["div[class*='supporting']", "section[class*='supporting']",
-                            "div.section[aria-labelledby*='supporting']"]:
+                for sel in [
+                    "div[class*='supporting']",
+                    "section[class*='supporting']",
+                    "div.section[aria-labelledby*='supporting']",
+                ]:
                     sect = await page.query_selector(sel)
                     if sect:
                         links = await sect.evaluate("""(el) => {
@@ -1022,8 +1074,11 @@ class SupplementaryDownloader:
         elif name == "springer":
             # Springer: ESM section
             try:
-                for sel in ["div[class*='ESM']", "section[class*='Supplementary']",
-                            "div[class*='supplementary-material']"]:
+                for sel in [
+                    "div[class*='ESM']",
+                    "section[class*='Supplementary']",
+                    "div[class*='supplementary-material']",
+                ]:
                     sect = await page.query_selector(sel)
                     if sect:
                         links = await sect.evaluate("""(el) => {
@@ -1102,6 +1157,7 @@ class SupplementaryDownloader:
             ct = resp.headers.get("content-type", "")
             if "text/html" not in ct and len(body) > 100:
                 from httpx import Headers
+
                 fake_resp = httpx.Response(
                     status_code=200,
                     headers=Headers({"content-type": ct or "application/octet-stream"}),
@@ -1120,6 +1176,3 @@ class SupplementaryDownloader:
         if self._proxy_url:
             return self._proxy_url.rstrip("?=&") + url
         return url
-
-
-

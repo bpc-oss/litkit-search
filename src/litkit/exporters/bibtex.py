@@ -1,12 +1,19 @@
-﻿"""BibTeX exporter."""
+"""BibTeX exporter."""
+
 from __future__ import annotations
 
 from litkit.core.models import Paper
 
 _ENTRY_TYPES = {
-    "journal": "article", "conference": "inproceedings", "book": "book",
-    "book-chapter": "incollection", "report": "techreport", "thesis": "phdthesis",
-    "preprint": "article", "dataset": "misc", "other": "misc",
+    "journal": "article",
+    "conference": "inproceedings",
+    "book": "book",
+    "book-chapter": "incollection",
+    "report": "techreport",
+    "thesis": "phdthesis",
+    "preprint": "article",
+    "dataset": "misc",
+    "other": "misc",
 }
 
 
@@ -16,6 +23,7 @@ def _bib_type(paper: Paper) -> str:
 
 def _cite_key(paper: Paper) -> str:
     import re
+
     first = paper.authors[0].family.lower() if paper.authors else "anon"
     first = re.sub(r"[^a-z]", "", first)
     year = paper.year or 0
@@ -38,9 +46,7 @@ def write_bibtex(papers: list[Paper]) -> str:
         btype = _bib_type(paper)
         lines.append(f"@{btype}{{{key},")
         if paper.authors:
-            authors = " and ".join(
-                f"{a.full}" if a.given else a.family for a in paper.authors
-            )
+            authors = " and ".join(f"{a.full}" if a.given else a.family for a in paper.authors)
             lines.append(f"  author = {{{_escape(authors)}}},")
         if paper.title:
             lines.append(f"  title = {{{_escape(paper.title)}}},")

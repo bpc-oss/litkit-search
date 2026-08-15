@@ -12,7 +12,7 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-import yaml  # type: ignore[import-untyped]
+import yaml
 
 from litkit.core.models import Author, Paper, Venue
 from litkit.verify.grobid import GrobidClient

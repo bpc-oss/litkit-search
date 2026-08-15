@@ -163,6 +163,7 @@ def build_hierarchy(
     try:
         if api_type == "anthropic":
             import anthropic
+
             client = anthropic.Anthropic(api_key=key)
             model = "claude-sonnet-4-20250514"
             resp = client.messages.create(
@@ -174,6 +175,7 @@ def build_hierarchy(
             raw = _extract_text(resp.content)
         elif api_type == "deepseek":
             from openai import OpenAI
+
             client = OpenAI(api_key=key, base_url="https://api.deepseek.com/v1")
             model = "deepseek-chat"
             resp = client.chat.completions.create(
@@ -187,6 +189,7 @@ def build_hierarchy(
             raw = resp.choices[0].message.content or ""
         else:
             from openai import OpenAI
+
             client = OpenAI(api_key=key)
             model = "gpt-4o"
             resp = client.chat.completions.create(
@@ -212,9 +215,7 @@ def build_hierarchy(
 # ---------------------------------------------------------------------------
 
 
-def _try_llm(
-    topic: str, api_key: str | None, api_type: str, model: str
-) -> list[Strategy]:
+def _try_llm(topic: str, api_key: str | None, api_type: str, model: str) -> list[Strategy]:
     """Try LLM-based expansion, return None on failure."""
     key = (
         api_key
@@ -246,6 +247,7 @@ def _try_llm(
 def _call_anthropic(topic: str, api_key: str | None, model: str) -> str:
     key = api_key or os.environ["ANTHROPIC_API_KEY"]
     import anthropic
+
     client = anthropic.Anthropic(api_key=key)
     model_name = model or "claude-sonnet-4-20250514"
     resp = client.messages.create(
@@ -260,6 +262,7 @@ def _call_anthropic(topic: str, api_key: str | None, model: str) -> str:
 def _call_openai(topic: str, api_key: str | None, model: str) -> str:
     key = api_key or os.environ["OPENAI_API_KEY"]
     from openai import OpenAI
+
     client = OpenAI(api_key=key)
     model_name = model or "gpt-4o"
     resp = client.chat.completions.create(
@@ -277,6 +280,7 @@ def _call_deepseek(topic: str, api_key: str | None, model: str) -> str:
     """Call DeepSeek API (OpenAI-compatible, uses different base_url)."""
     key = api_key or os.environ["DEEPSEEK_API_KEY"]
     from openai import OpenAI
+
     client = OpenAI(api_key=key, base_url="https://api.deepseek.com/v1")
     model_name = model or "deepseek-chat"
     resp = client.chat.completions.create(
@@ -315,14 +319,16 @@ def _parse_strategies(raw: str) -> list[Strategy]:
             if g.get("terms")
         )
 
-        result.append(Strategy(
-            core_query=sd.get("core_query", ""),
-            synonym_groups=groups,
-            inclusion_criteria=tuple(sd.get("inclusion_criteria", [])),
-            exclusion_criteria=tuple(sd.get("exclusion_criteria", [])),
-            databases=tuple(sd.get("suggested_databases", ["crossref", "pubmed", "openalex"])),
-            query_type=sd.get("query_type", "general"),
-        ))
+        result.append(
+            Strategy(
+                core_query=sd.get("core_query", ""),
+                synonym_groups=groups,
+                inclusion_criteria=tuple(sd.get("inclusion_criteria", [])),
+                exclusion_criteria=tuple(sd.get("exclusion_criteria", [])),
+                databases=tuple(sd.get("suggested_databases", ["crossref", "pubmed", "openalex"])),
+                query_type=sd.get("query_type", "general"),
+            )
+        )
 
     return result
 
@@ -362,18 +368,101 @@ def _resolve_api_key(api_key: str | None, api_type: str) -> str:
 def _extract_key_terms(topic: str) -> list[str]:
     """Extract meaningful keywords from a topic sentence."""
     stopwords = {
-        "the", "a", "an", "of", "in", "by", "to", "for", "and", "or",
-        "is", "are", "was", "were", "be", "been", "being", "has", "have",
-        "had", "do", "does", "did", "will", "would", "could", "should",
-        "may", "might", "shall", "can", "need", "dares", "ought", "used",
-        "its", "it", "this", "that", "these", "those", "we", "they",
-        "their", "our", "my", "your", "his", "her", "from", "with",
-        "on", "at", "as", "but", "not", "no", "nor", "both", "each",
-        "every", "all", "any", "few", "more", "most", "other", "some",
-        "such", "only", "own", "same", "so", "than", "too", "very",
-        "just", "about", "above", "after", "again", "against", "because",
-        "before", "between", "down", "during", "out", "over", "through",
-        "under", "up", "while", "into", "upon",
+        "the",
+        "a",
+        "an",
+        "of",
+        "in",
+        "by",
+        "to",
+        "for",
+        "and",
+        "or",
+        "is",
+        "are",
+        "was",
+        "were",
+        "be",
+        "been",
+        "being",
+        "has",
+        "have",
+        "had",
+        "do",
+        "does",
+        "did",
+        "will",
+        "would",
+        "could",
+        "should",
+        "may",
+        "might",
+        "shall",
+        "can",
+        "need",
+        "dares",
+        "ought",
+        "used",
+        "its",
+        "it",
+        "this",
+        "that",
+        "these",
+        "those",
+        "we",
+        "they",
+        "their",
+        "our",
+        "my",
+        "your",
+        "his",
+        "her",
+        "from",
+        "with",
+        "on",
+        "at",
+        "as",
+        "but",
+        "not",
+        "no",
+        "nor",
+        "both",
+        "each",
+        "every",
+        "all",
+        "any",
+        "few",
+        "more",
+        "most",
+        "other",
+        "some",
+        "such",
+        "only",
+        "own",
+        "same",
+        "so",
+        "than",
+        "too",
+        "very",
+        "just",
+        "about",
+        "above",
+        "after",
+        "again",
+        "against",
+        "because",
+        "before",
+        "between",
+        "down",
+        "during",
+        "out",
+        "over",
+        "through",
+        "under",
+        "up",
+        "while",
+        "into",
+        "upon",
     }
     words = re.findall(r"[a-zA-Z][a-zA-Z0-9\-]+", topic.lower())
     return [w for w in words if w not in stopwords and len(w) > 2]

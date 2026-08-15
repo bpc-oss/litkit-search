@@ -121,8 +121,7 @@ def download(
 
     if ctx.obj.get("json"):
         payload = [
-            {"id": p.id, "title": p.title, "download_path": results.get(p.id)}
-            for p in papers
+            {"id": p.id, "title": p.title, "download_path": results.get(p.id)} for p in papers
         ]
         console.print(json.dumps(payload, ensure_ascii=False, indent=2))
         return
@@ -180,6 +179,7 @@ def download_suppl_cmd(
 
                 if output_dir and d:
                     import shutil
+
                     for f in d.iterdir():
                         if f.is_file() and f.name != ".done":
                             shutil.copy2(str(f), output_dir)
@@ -443,6 +443,7 @@ def deep_search_cmd(
     console.print()
 
     from rich.table import Table
+
     table = Table(title=f"Top {len(result['papers'])} Papers")
     table.add_column("#", justify="right")
     table.add_column("DOI", style="cyan")
@@ -478,6 +479,7 @@ def deep_search_cmd(
 
     if output:
         import json
+
         with open(output, "w", encoding="utf-8") as f:
             json.dump(result, f, indent=2, ensure_ascii=False)
         console.print(f"[green]Saved to {output}[/green]")
@@ -593,7 +595,10 @@ def sources(ctx: typer.Context):
     if ctx.obj.get("json"):
         console.print(
             json.dumps(
-                {name: {"requires_key": "api_key" in dir(cls)} for name, cls in all_sources().items()},
+                {
+                    name: {"requires_key": "api_key" in dir(cls)}
+                    for name, cls in all_sources().items()
+                },
                 ensure_ascii=False,
                 indent=2,
             )

@@ -86,12 +86,14 @@ def _mdpi_parts(doi: str) -> tuple[str, str] | None:
         _MDPI_JOURNAL_NAMES,
         _mdpi_res_urls,
     )
+
     urls = _mdpi_res_urls(doi)
     if not urls:
         return None
     stem = urls[0].rsplit("/", 1)[-1][:-4]
     name = stem.rsplit("-", 2)[0]
     return (_MDPI_JOURNAL_NAMES.get(name, name), stem)
+
 
 # ---------------------------------------------------------------------------
 # Optional Playwright import (Chrome CDP fallback)
@@ -222,9 +224,9 @@ def _is_science_direct(doi: str) -> bool:
 def _is_sciencedirect_asset_pdf_url(url: str) -> bool:
     """Return True when *url* is ScienceDirect's temporary PDF asset URL."""
     parsed = urlparse(url)
-    return parsed.netloc.endswith(
-        "pdf.sciencedirectassets.com"
-    ) and parsed.path.lower().endswith(".pdf")
+    return parsed.netloc.endswith("pdf.sciencedirectassets.com") and parsed.path.lower().endswith(
+        ".pdf"
+    )
 
 
 def _is_sciencedirect_article_url(url: str) -> bool:
@@ -952,8 +954,8 @@ class InstitutionalDownloader(Downloader):
                 with contextlib.suppress(Exception):
                     has_meta = await page.evaluate(
                         "() => !!document.querySelector("
-                        "'meta[name=\"citation_pii\"], "
-                        "meta[name=\"citation_doi\"], meta[name=\"citation_title\"]'"
+                        '\'meta[name="citation_pii"], '
+                        'meta[name="citation_doi"], meta[name="citation_title"]\''
                         ")"
                     )
                     if has_meta:
@@ -963,8 +965,8 @@ class InstitutionalDownloader(Downloader):
         with contextlib.suppress(Exception):
             has_article_meta = await page.evaluate(
                 "() => !!document.querySelector("
-                "'meta[name=\"citation_doi\"], meta[name=\"citation_title\"], "
-                "meta[name=\"citation_pdf_url\"], meta[name=\"dc.Title\"]'"
+                '\'meta[name="citation_doi"], meta[name="citation_title"], '
+                'meta[name="citation_pdf_url"], meta[name="dc.Title"]\''
                 ")"
             )
         if has_article_meta and url_matches:
@@ -1262,9 +1264,7 @@ class InstitutionalDownloader(Downloader):
                             continue
                         await asyncio.sleep(3)
                         for _ in range(45):  # up to ~90s challenge wait
-                            if await self._page_matches_publisher(
-                                page, publisher, paper
-                            ):
+                            if await self._page_matches_publisher(page, publisher, paper):
                                 loaded = True
                                 break
                             challenge = await self._page_looks_like_browser_challenge(page)
@@ -1275,8 +1275,7 @@ class InstitutionalDownloader(Downloader):
                                 # themselves in a real-profile browser).
                                 with contextlib.suppress(Exception):
                                     box = page.locator(
-                                        ".cf-turnstile, #cf-turnstile, "
-                                        "iframe[src*='turnstile']"
+                                        ".cf-turnstile, #cf-turnstile, iframe[src*='turnstile']"
                                     )
                                     if await box.count() >= 1:
                                         await box.first.click(timeout=3000)
@@ -1371,20 +1370,22 @@ class InstitutionalDownloader(Downloader):
                         body_text = ""
                         with contextlib.suppress(Exception):
                             body_text = (
-                                f"{await page.title()}\n"
-                                f"{await page.locator('body').inner_text()}"
+                                f"{await page.title()}\n{await page.locator('body').inner_text()}"
                             )
                         if _text_looks_like_article_page(body_text, paper):
                             with contextlib.suppress(Exception):
                                 cdp = await context.new_cdp_session(page)
-                                result = await cdp.send("Page.printToPDF", {
-                                    "printBackground": True,
-                                    "preferCSSPageSize": True,
-                                    "marginTop": 0.4,
-                                    "marginBottom": 0.4,
-                                    "marginLeft": 0.4,
-                                    "marginRight": 0.4,
-                                })
+                                result = await cdp.send(
+                                    "Page.printToPDF",
+                                    {
+                                        "printBackground": True,
+                                        "preferCSSPageSize": True,
+                                        "marginTop": 0.4,
+                                        "marginBottom": 0.4,
+                                        "marginLeft": 0.4,
+                                        "marginRight": 0.4,
+                                    },
+                                )
                                 import base64
 
                                 raw = base64.b64decode(result["data"])
@@ -1461,6 +1462,7 @@ class InstitutionalDownloader(Downloader):
             if real_profile and Path(real_profile).exists():
                 tmp_dir = str(default_profile_dir("institutional_real"))
                 import shutil as _shutil
+
                 _src_root = Path(real_profile)
                 _src_def = _src_root / "Default" if (_src_root / "Default").exists() else _src_root
                 _work = Path(tmp_dir)
@@ -1475,9 +1477,16 @@ class InstitutionalDownloader(Downloader):
                     with contextlib.suppress(OSError):
                         _shutil.copy2(_ls, _work / "Local State")
                 (_work / "Default").mkdir(parents=True, exist_ok=True)
-                for _name in ("Cookies", "Network", "Preferences", "Web Data",
-                              "Login Data", "Local Storage", "Session Storage",
-                              "Secure Preferences"):
+                for _name in (
+                    "Cookies",
+                    "Network",
+                    "Preferences",
+                    "Web Data",
+                    "Login Data",
+                    "Local Storage",
+                    "Session Storage",
+                    "Secure Preferences",
+                ):
                     _f = _src_def / _name
                     if _f.exists():
                         _dst = _work / "Default" / _name
@@ -1550,18 +1559,16 @@ class InstitutionalDownloader(Downloader):
                 # Inject EZProxy cookies — but never overwrite the live
                 # profile session (see note below).
                 if pw_cookies:
-                    existing_ez = {
-                        f"{c['domain']}|{c['name']}" for c in await context.cookies()
-                    }
+                    existing_ez = {f"{c['domain']}|{c['name']}" for c in await context.cookies()}
                     fresh_ez = [
-                        c for c in pw_cookies
+                        c
+                        for c in pw_cookies
                         if f"{c.get('domain', '')}|{c.get('name', '')}" not in existing_ez
                     ]
                     if fresh_ez:
                         await context.add_cookies(fresh_ez)
                         logger.debug(
-                            "Chrome CDP: injected %d fresh EZProxy cookies "
-                            "(skipped %d existing)",
+                            "Chrome CDP: injected %d fresh EZProxy cookies (skipped %d existing)",
                             len(fresh_ez),
                             len(pw_cookies) - len(fresh_ez),
                         )
@@ -1592,14 +1599,14 @@ class InstitutionalDownloader(Downloader):
                         continue
                     _ck = self._chrome_cookies_for_playwright(str(_cp))
                     _fresh = [
-                        c for c in _ck
+                        c
+                        for c in _ck
                         if f"{c.get('domain', '')}|{c.get('name', '')}" not in existing
                     ]
                     if _fresh:
                         await context.add_cookies(_fresh)
                         logger.debug(
-                            "Chrome CDP: loaded %d fresh cookies from %s "
-                            "(skipped %d existing)",
+                            "Chrome CDP: loaded %d fresh cookies from %s (skipped %d existing)",
                             len(_fresh),
                             _cookie_file,
                             len(_ck) - len(_fresh),
@@ -1699,9 +1706,7 @@ class InstitutionalDownloader(Downloader):
                             # that frequently passes on the retry.
                             if cf_wait > 0 and cf_wait % 10 == 0:
                                 with contextlib.suppress(Exception):
-                                    await page.reload(
-                                        wait_until="load", timeout=30000
-                                    )
+                                    await page.reload(wait_until="load", timeout=30000)
                                 logger.debug(
                                     "Chrome CDP [%s]: reloaded challenge page",
                                     publisher.name,
@@ -1880,8 +1885,7 @@ class InstitutionalDownloader(Downloader):
                             if pdf_data and pdf_data[:4] == b"%PDF":
                                 dest.write_bytes(pdf_data)
                                 logger.info(
-                                    "Downloaded SD PDF via View-PDF click "
-                                    "for %s (%d bytes)",
+                                    "Downloaded SD PDF via View-PDF click for %s (%d bytes)",
                                     paper.doi,
                                     len(pdf_data),
                                 )
@@ -1902,9 +1906,7 @@ class InstitutionalDownloader(Downloader):
                                 )
                                 pdfft_url = f"{article_url.rstrip('/')}/pdfft"
 
-                            logger.debug(
-                                "Chrome CDP [sciencedirect]: pdfft: %s", pdfft_url[:80]
-                            )
+                            logger.debug("Chrome CDP [sciencedirect]: pdfft: %s", pdfft_url[:80])
 
                             # Navigate to the pdfft endpoint, then WAIT for the
                             # Cloudflare/Turnstile challenge to pass *in the real
@@ -2050,9 +2052,7 @@ class InstitutionalDownloader(Downloader):
                                     )
 
                     except Exception as exc:
-                        logger.debug(
-                            "Chrome CDP [sciencedirect]: unexpected error: %s", exc
-                        )
+                        logger.debug("Chrome CDP [sciencedirect]: unexpected error: %s", exc)
 
                 # --- MDPI: citation_pdf_url -> window.open -> expect_download ---
                 if publisher.name == "mdpi":
@@ -2095,14 +2095,13 @@ class InstitutionalDownloader(Downloader):
                                 if data[:4] == b"%PDF":
                                     logger.info(
                                         "Downloaded MDPI PDF via Chrome CDP for %s (%d bytes)",
-                                        paper.doi, len(data),
+                                        paper.doi,
+                                        len(data),
                                     )
                                     await browser.close()
                                     return dest
                         except Exception as exc:
-                            logger.debug(
-                                "Chrome CDP [mdpi]: <a download> failed: %s", exc
-                            )
+                            logger.debug("Chrome CDP [mdpi]: <a download> failed: %s", exc)
                             # Fallback: fetch the PDF URL directly via httpx
                             try:
                                 import httpx
@@ -2128,9 +2127,7 @@ class InstitutionalDownloader(Downloader):
                         return None
 
                     except Exception as exc:
-                        logger.debug(
-                            "Chrome CDP [mdpi]: unexpected error: %s", exc
-                        )
+                        logger.debug("Chrome CDP [mdpi]: unexpected error: %s", exc)
                         await browser.close()
                         return None
 
@@ -2194,8 +2191,7 @@ class InstitutionalDownloader(Downloader):
                         await browser.close()
                     else:
                         logger.debug(
-                            "Chrome CDP [acs]: no PDF captured, "
-                            "fall through to generic handler"
+                            "Chrome CDP [acs]: no PDF captured, fall through to generic handler"
                         )
 
                 # --- Taylor & Francis: click "View PDF" on article page ---
@@ -2239,9 +2235,7 @@ class InstitutionalDownloader(Downloader):
                                         break
                                     await asyncio.sleep(1)
                             except Exception as exc:
-                                logger.debug(
-                                    "Chrome CDP [taylor_francis]: click error: %s", exc
-                                )
+                                logger.debug("Chrome CDP [taylor_francis]: click error: %s", exc)
                         else:
                             logger.debug(
                                 "Chrome CDP [taylor_francis]: no View PDF link "
@@ -2409,7 +2403,8 @@ class InstitutionalDownloader(Downloader):
                     except Exception as pattern_exc:
                         logger.debug(
                             "Chrome CDP [%s]: Pattern C error (%s), waiting for page to settle",
-                            publisher.name, pattern_exc,
+                            publisher.name,
+                            pattern_exc,
                         )
                         # Page may have navigated (e.g. OIDC redirect).
                         # Wait for it to settle before printToPDF.
@@ -2448,8 +2443,7 @@ class InstitutionalDownloader(Downloader):
                             # 1. click visible Turnstile checkbox (idempotent)
                             with contextlib.suppress(Exception):
                                 _box = page.locator(
-                                    ".cf-turnstile, #cf-turnstile, "
-                                    "iframe[src*='turnstile']"
+                                    ".cf-turnstile, #cf-turnstile, iframe[src*='turnstile']"
                                 )
                                 if await _box.count() >= 1:
                                     await _box.first.click(timeout=2000)
@@ -2502,8 +2496,7 @@ class InstitutionalDownloader(Downloader):
                         if pdf_data and pdf_data[:4] == b"%PDF":
                             dest.write_bytes(pdf_data)
                             logger.info(
-                                "Downloaded PDF via Chrome CDP after Turnstile "
-                                "for %s (%d bytes)",
+                                "Downloaded PDF via Chrome CDP after Turnstile for %s (%d bytes)",
                                 paper.doi,
                                 len(pdf_data),
                             )
@@ -2513,10 +2506,13 @@ class InstitutionalDownloader(Downloader):
                             # PDF navigated into the tab; capture via CDP.
                             with contextlib.suppress(Exception):
                                 cdp_session = await context.new_cdp_session(page)
-                                result = await cdp_session.send("Page.printToPDF", {
-                                    "printBackground": True,
-                                    "preferCSSPageSize": True,
-                                })
+                                result = await cdp_session.send(
+                                    "Page.printToPDF",
+                                    {
+                                        "printBackground": True,
+                                        "preferCSSPageSize": True,
+                                    },
+                                )
                                 import base64
 
                                 raw = base64.b64decode(result["data"])
@@ -2567,14 +2563,17 @@ class InstitutionalDownloader(Downloader):
                         for attempt in range(2):
                             try:
                                 cdp = await context.new_cdp_session(page)
-                                result = await cdp.send("Page.printToPDF", {
-                                    "printBackground": True,
-                                    "preferCSSPageSize": True,
-                                    "marginTop": 0.4,
-                                    "marginBottom": 0.4,
-                                    "marginLeft": 0.4,
-                                    "marginRight": 0.4,
-                                })
+                                result = await cdp.send(
+                                    "Page.printToPDF",
+                                    {
+                                        "printBackground": True,
+                                        "preferCSSPageSize": True,
+                                        "marginTop": 0.4,
+                                        "marginBottom": 0.4,
+                                        "marginLeft": 0.4,
+                                        "marginRight": 0.4,
+                                    },
+                                )
                                 import base64
 
                                 raw = base64.b64decode(result["data"])
@@ -2593,7 +2592,9 @@ class InstitutionalDownloader(Downloader):
                             except Exception as exc:
                                 logger.debug(
                                     "Chrome CDP [%s]: printToPDF attempt %d error: %s",
-                                    publisher.name, attempt + 1, exc,
+                                    publisher.name,
+                                    attempt + 1,
+                                    exc,
                                 )
                                 # One retry with a short delay
                                 await asyncio.sleep(2)

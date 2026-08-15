@@ -1,4 +1,4 @@
-﻿"""DBLP â€” CS bibliography (XML API).
+"""DBLP â€” CS bibliography (XML API).
 
 API: https://dblp.org/faq/13501473.html
 """
@@ -110,4 +110,3 @@ class DBLP(SearchSource):
             source=self.name,
             extra={"dblp_type": pub_type},
         )
-

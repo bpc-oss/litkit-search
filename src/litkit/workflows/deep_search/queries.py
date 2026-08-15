@@ -18,10 +18,10 @@ from litkit.workflows.deep_search.types import Strategy, SynonymGroup
 
 logger = logging.getLogger(__name__)
 
-MAX_TERMS_PER_GROUP = 8    # 每组最多用前 N 个术语
-MAX_PAIRWISE = 10          # 最多生成 N 个成对组合
-MAX_TRIPLE = 8             # 最多 N 个三元组合
-MAX_QUERIES_TOTAL = 50     # 总查询数上限
+MAX_TERMS_PER_GROUP = 8  # 每组最多用前 N 个术语
+MAX_PAIRWISE = 10  # 最多生成 N 个成对组合
+MAX_TRIPLE = 8  # 最多 N 个三元组合
+MAX_QUERIES_TOTAL = 50  # 总查询数上限
 
 
 def build_all_queries(strategies: list[Strategy]) -> list[str]:
@@ -53,10 +53,7 @@ def _build_queries_for_strategy(strategy: Strategy) -> list[str]:
         return queries
 
     # 截断每组术语
-    truncated = [
-        SynonymGroup(g.concept, g.terms[:MAX_TERMS_PER_GROUP])
-        for g in groups
-    ]
+    truncated = [SynonymGroup(g.concept, g.terms[:MAX_TERMS_PER_GROUP]) for g in groups]
 
     # --- 1. 成对交叉概念 (pairwise) ---
     if len(truncated) >= 2:

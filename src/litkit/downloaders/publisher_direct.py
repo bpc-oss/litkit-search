@@ -137,9 +137,7 @@ def _mdpi_res_urls(doi: str) -> list[str]:
         return []
     name = _MDPI_JOURNAL_NAMES.get(abbr, abbr)
     stem = f"{name}-{vol:02d}-{article:05d}"
-    return [
-        f"https://mdpi-res.com/d_attachment/{name}/{stem}/article_deploy/{stem}.pdf"
-    ]
+    return [f"https://mdpi-res.com/d_attachment/{name}/{stem}/article_deploy/{stem}.pdf"]
 
 
 _PUBLISHER_PATTERN_RULES: list[tuple[tuple[str, ...], tuple[str, ...]]] = [
@@ -192,9 +190,7 @@ def _candidate_pdf_urls(paper: Paper) -> list[str]:
     # MDPI blocks www.mdpi.com for non-browser clients (403); prefer the
     # predictable mdpi-res.com CDN links, keeping the HTML page as backup.
     if doi.lower().startswith(_MDPI_DOI_PREFIX):
-        return _mdpi_res_urls(doi) + [
-            f"https://www.mdpi.com/{doi_path}/pdf"
-        ]
+        return _mdpi_res_urls(doi) + [f"https://www.mdpi.com/{doi_path}/pdf"]
 
     for prefixes, patterns in _PUBLISHER_PATTERN_RULES:
         if doi.startswith(prefixes):

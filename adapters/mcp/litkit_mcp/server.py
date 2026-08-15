@@ -45,16 +45,16 @@ def litkit_search(
     from litkit.core.pipeline import Pipeline
     from litkit.sources import _registry
 
-    src_list = list(_registry) if sources in ("all", "") else [s.strip() for s in sources.split(",")]
+    src_list = (
+        list(_registry) if sources in ("all", "") else [s.strip() for s in sources.split(",")]
+    )
     kwargs: dict = {}
     if year_from:
         kwargs["year_from"] = year_from
     if year_to:
         kwargs["year_to"] = year_to
     papers = _run(
-        Pipeline(load_env(), MetadataCache()).search(
-            query, sources=src_list, limit=limit, **kwargs
-        )
+        Pipeline(load_env(), MetadataCache()).search(query, sources=src_list, limit=limit, **kwargs)
     )
     return [p.model_dump(mode="json") for p in papers]
 
@@ -102,7 +102,9 @@ def litkit_download(query: str, limit: int = 10, sources: str = "all") -> list[d
     from litkit.core.pipeline import Pipeline
     from litkit.sources import _registry
 
-    src_list = list(_registry) if sources in ("all", "") else [s.strip() for s in sources.split(",")]
+    src_list = (
+        list(_registry) if sources in ("all", "") else [s.strip() for s in sources.split(",")]
+    )
     pipeline = Pipeline(load_env(), MetadataCache())
     papers = _run(pipeline.search(query, sources=src_list, limit=limit))
     results = _run(pipeline.download_pdfs(papers))

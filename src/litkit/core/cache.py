@@ -92,9 +92,7 @@ class MetadataCache:
     # ── Paper cache ──────────────────────────────────────────────
 
     def get_paper(self, paper_id: str) -> Paper | None:
-        cur = self._conn.execute(
-            "SELECT data FROM papers WHERE id = ?", (paper_id,)
-        )
+        cur = self._conn.execute("SELECT data FROM papers WHERE id = ?", (paper_id,))
         row = cur.fetchone()
         if row is None:
             return None
@@ -116,9 +114,7 @@ class MetadataCache:
 
     def put_papers(self, papers: list[Paper]) -> None:
         now = int(time.time())
-        rows = [
-            (p.id, p.doi, p.model_dump_json(), p.source, now) for p in papers
-        ]
+        rows = [(p.id, p.doi, p.model_dump_json(), p.source, now) for p in papers]
         self._conn.executemany(
             "INSERT OR REPLACE INTO papers (id, doi, data, source, cached_at) "
             "VALUES (?, ?, ?, ?, ?)",
@@ -146,9 +142,7 @@ class MetadataCache:
             return None
         data, cached_at, ttl = row
         if time.time() - cached_at > ttl:
-            self._conn.execute(
-                "DELETE FROM http_cache WHERE url_hash = ?", (url_hash,)
-            )
+            self._conn.execute("DELETE FROM http_cache WHERE url_hash = ?", (url_hash,))
             self._conn.commit()
             return None
         return data  # type: ignore[no-any-return]
@@ -258,9 +252,7 @@ class MetadataCache:
             "SELECT ts, action, detail FROM audit_log ORDER BY id DESC LIMIT ?",
             (limit,),
         )
-        return [
-            {"ts": r[0], "action": r[1], "detail": r[2]} for r in cur.fetchall()
-        ]
+        return [{"ts": r[0], "action": r[1], "detail": r[2]} for r in cur.fetchall()]
 
     # ── PDF cache ────────────────────────────────────────────────
 

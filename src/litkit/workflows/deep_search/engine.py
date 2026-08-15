@@ -92,7 +92,8 @@ async def run(
         strategies = expand_heuristic(topic)
     logger.info(
         "Phase 1 (strategies): %d strategies in %.1fs",
-        len(strategies), time.monotonic() - t0,
+        len(strategies),
+        time.monotonic() - t0,
     )
 
     # -----------------------------------------------------------------------
@@ -106,7 +107,8 @@ async def run(
             hierarchy_queries = build_hierarchy_queries(hierarchy)
         logger.info(
             "Phase 2 (hierarchy): %d hierarchy queries in %.1fs",
-            len(hierarchy_queries), time.monotonic() - t0,
+            len(hierarchy_queries),
+            time.monotonic() - t0,
         )
 
     # -----------------------------------------------------------------------
@@ -126,7 +128,8 @@ async def run(
         ontology_terms = await expand_terms(all_terms[:5], cache)
         logger.info(
             "Phase 3 (ontology): %d terms expanded in %.1fs",
-            len(ontology_terms), time.monotonic() - t0,
+            len(ontology_terms),
+            time.monotonic() - t0,
         )
 
     # -----------------------------------------------------------------------
@@ -144,7 +147,8 @@ async def run(
 
     logger.info(
         "Phase 4 (queries): %d total queries in %.1fs",
-        len(all_queries), time.monotonic() - t0,
+        len(all_queries),
+        time.monotonic() - t0,
     )
 
     # -----------------------------------------------------------------------
@@ -182,7 +186,9 @@ async def run(
         chain_papers = backward + forward
         logger.info(
             "Phase 6 (citation chain): %d backward + %d forward in %.1fs",
-            len(backward), len(forward), time.monotonic() - t0,
+            len(backward),
+            len(forward),
+            time.monotonic() - t0,
         )
 
     # -----------------------------------------------------------------------
@@ -200,8 +206,7 @@ async def run(
             pearl_queries = build_pearl_queries(keywords)
 
             pearl_tasks = [
-                _search_one(pipeline, q, src_list, per_query)
-                for q in pearl_queries[:15]
+                _search_one(pipeline, q, src_list, per_query) for q in pearl_queries[:15]
             ]
             pearl_results = await asyncio.gather(*pearl_tasks, return_exceptions=True)
             for r in pearl_results:
@@ -212,7 +217,9 @@ async def run(
 
         logger.info(
             "Phase 7 (pearl growing): %d keywords, %d more papers in %.1fs",
-            len(keywords), len(pearl_papers), time.monotonic() - t0,
+            len(keywords),
+            len(pearl_papers),
+            time.monotonic() - t0,
         )
 
     # -----------------------------------------------------------------------
@@ -222,10 +229,13 @@ async def run(
     deduped = _deduplicate(all_found)
 
     # Sort: DOI-first, citation count desc
-    deduped.sort(key=lambda p: (
-        1 if p.get("doi") else 0,
-        p.get("citation_count", 0),
-    ), reverse=True)
+    deduped.sort(
+        key=lambda p: (
+            1 if p.get("doi") else 0,
+            p.get("citation_count", 0),
+        ),
+        reverse=True,
+    )
 
     # Filter by min citations
     if min_citations > 0:
@@ -237,20 +247,22 @@ async def run(
     # Format output
     result_papers = []
     for p in final_papers:
-        result_papers.append({
-            "doi": p.get("doi", ""),
-            "title": p.get("title", "")[:200],
-            "year": p.get("year", 0),
-            "journal": p.get("journal", ""),
-            "source": p.get("source", ""),
-            "citation_count": p.get("citation_count", 0),
-            "authors": list(p.get("authors", []))[:5],
-            "abstract": (p.get("abstract") or "")[:500],
-            "keywords": list(p.get("keywords", []))[:10],
-            "from_citation_chain": p.get("from_citation_chain", False),
-            "from_pearl_growing": p.get("from_pearl_growing", False),
-            "chain_direction": p.get("chain_direction", ""),
-        })
+        result_papers.append(
+            {
+                "doi": p.get("doi", ""),
+                "title": p.get("title", "")[:200],
+                "year": p.get("year", 0),
+                "journal": p.get("journal", ""),
+                "source": p.get("source", ""),
+                "citation_count": p.get("citation_count", 0),
+                "authors": list(p.get("authors", []))[:5],
+                "abstract": (p.get("abstract") or "")[:500],
+                "keywords": list(p.get("keywords", []))[:10],
+                "from_citation_chain": p.get("from_citation_chain", False),
+                "from_pearl_growing": p.get("from_pearl_growing", False),
+                "chain_direction": p.get("chain_direction", ""),
+            }
+        )
 
     years = [p["year"] for p in result_papers if p["year"]]
     elapsed = time.monotonic() - start

@@ -152,7 +152,9 @@ def _check_verify_tools() -> CheckResult:
     if _port_open("localhost", 8070):
         notes.append("GROBID reachable at localhost:8070")
     else:
-        notes.append("GROBID not detected at localhost:8070 (optional; e.g. docker run lfoppiano/grobid)")
+        notes.append(
+            "GROBID not detected at localhost:8070 (optional; e.g. docker run lfoppiano/grobid)"
+        )
     return CheckResult("verify tools", "WARN", "; ".join(notes))
 
 

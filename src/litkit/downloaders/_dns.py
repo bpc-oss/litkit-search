@@ -136,9 +136,7 @@ def _patched_getaddrinfo(
     if host in _resolved:
         for ip in _resolved[host]:
             if ":" not in ip:
-                return [
-                    (socket.AF_INET, socket.SOCK_STREAM, 6, "", (ip, port_num))
-                ]
+                return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", (ip, port_num))]
         if _resolved[host]:
             return [
                 (
@@ -155,9 +153,7 @@ def _patched_getaddrinfo(
         if host and host.endswith(suffix) and base in _resolved and _resolved[base]:
             for ip in _resolved[base]:
                 if ":" not in ip:
-                    return [
-                        (socket.AF_INET, socket.SOCK_STREAM, 6, "", (ip, port_num))
-                    ]
+                    return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", (ip, port_num))]
             return [
                 (
                     socket.AF_INET6,

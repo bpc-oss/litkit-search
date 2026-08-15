@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import sys
-
 from litkit.doctor import CheckResult, run_checks
 
 

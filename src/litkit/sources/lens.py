@@ -1,4 +1,4 @@
-﻿"""Lens.org â€” scholarly search + patent data.
+"""Lens.org â€” scholarly search + patent data.
 
 API: https://docs.lens.org/
 Requires LENS_API_KEY in .env (free tier available).
@@ -91,4 +91,3 @@ class Lens(SearchSource):
             source=self.name,
             oa_status=(r.get("open_access_status", "")),
         )
-

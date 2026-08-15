@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "litkit — Unified Academic Literature Search Toolkit"
+abstract: "Multi-source academic literature search, bulk retrieval, citation audit, and PDF download chain across 25+ scholarly sources."
+authors:
+  - family-names: "bpshil"
+    given-names: ""
+    orcid: ""
+keywords:
+  - academic
+  - literature-search
+  - arxiv
+  - pubmed
+  - citation
+  - deepseek-harness
+license: MIT
+version: 0.1.0
+date-released: 2026-08-15
+repository-code: "https://github.com/bpshil/litkit-search"

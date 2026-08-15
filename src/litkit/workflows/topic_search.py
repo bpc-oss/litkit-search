@@ -83,16 +83,12 @@ def expand_heuristic(topic: str) -> list[dict[str, Any]]:
     return [
         {
             "core_query": topic,
-            "synonym_groups": [
-                {"concept": "primary", "terms": terms[:5]}
-            ],
+            "synonym_groups": [{"concept": "primary", "terms": terms[:5]}],
             "databases": ["crossref", "pubmed", "openalex"],
         },
         {
             "core_query": " ".join(terms[:3]),
-            "synonym_groups": [
-                {"concept": "expanded", "terms": terms[3:8]}
-            ],
+            "synonym_groups": [{"concept": "expanded", "terms": terms[3:8]}],
             "databases": ["crossref", "pubmed"],
         },
     ]
@@ -120,18 +116,101 @@ def expand_with_llm(
 def _extract_key_terms(topic: str) -> list[str]:
     """Extract meaningful terms from a topic sentence."""
     stopwords = {
-        "the", "a", "an", "of", "in", "by", "to", "for", "and", "or",
-        "is", "are", "was", "were", "be", "been", "being", "has", "have",
-        "had", "do", "does", "did", "will", "would", "could", "should",
-        "may", "might", "shall", "can", "need", "dares", "ought", "used",
-        "its", "it", "this", "that", "these", "those", "we", "they",
-        "their", "our", "my", "your", "his", "her", "from", "with",
-        "on", "at", "as", "but", "not", "no", "nor", "both", "each",
-        "every", "all", "any", "few", "more", "most", "other", "some",
-        "such", "only", "own", "same", "so", "than", "too", "very",
-        "just", "about", "above", "after", "again", "against", "because",
-        "before", "between", "down", "during", "out", "over", "through",
-        "under", "up", "while", "into", "upon",
+        "the",
+        "a",
+        "an",
+        "of",
+        "in",
+        "by",
+        "to",
+        "for",
+        "and",
+        "or",
+        "is",
+        "are",
+        "was",
+        "were",
+        "be",
+        "been",
+        "being",
+        "has",
+        "have",
+        "had",
+        "do",
+        "does",
+        "did",
+        "will",
+        "would",
+        "could",
+        "should",
+        "may",
+        "might",
+        "shall",
+        "can",
+        "need",
+        "dares",
+        "ought",
+        "used",
+        "its",
+        "it",
+        "this",
+        "that",
+        "these",
+        "those",
+        "we",
+        "they",
+        "their",
+        "our",
+        "my",
+        "your",
+        "his",
+        "her",
+        "from",
+        "with",
+        "on",
+        "at",
+        "as",
+        "but",
+        "not",
+        "no",
+        "nor",
+        "both",
+        "each",
+        "every",
+        "all",
+        "any",
+        "few",
+        "more",
+        "most",
+        "other",
+        "some",
+        "such",
+        "only",
+        "own",
+        "same",
+        "so",
+        "than",
+        "too",
+        "very",
+        "just",
+        "about",
+        "above",
+        "after",
+        "again",
+        "against",
+        "because",
+        "before",
+        "between",
+        "down",
+        "during",
+        "out",
+        "over",
+        "through",
+        "under",
+        "up",
+        "while",
+        "into",
+        "upon",
     }
     words = re.findall(r"[a-zA-Z][a-zA-Z0-9\-]+", topic.lower())
     return [w for w in words if w not in stopwords and len(w) > 2]
@@ -151,9 +230,7 @@ def _parse_llm_response(raw: str) -> list[dict[str, Any]]:
             "synonym_groups": sd.get("synonym_groups", []),
             "inclusion_criteria": sd.get("inclusion_criteria", []),
             "exclusion_criteria": sd.get("exclusion_criteria", []),
-            "databases": sd.get("suggested_databases", [
-                "crossref", "pubmed", "openalex"
-            ]),
+            "databases": sd.get("suggested_databases", ["crossref", "pubmed", "openalex"]),
         }
         for sd in strategies_data
     ]
@@ -190,9 +267,7 @@ def _call_anthropic(
         return expand_heuristic(topic)
 
 
-def _call_openai(
-    topic: str, api_key: str | None = None, model: str = ""
-) -> list[dict[str, Any]]:
+def _call_openai(topic: str, api_key: str | None = None, model: str = "") -> list[dict[str, Any]]:
     """Call OpenAI-compatible API for topic expansion."""
     key = api_key or os.environ.get("OPENAI_API_KEY", "")
     if not key:
@@ -292,10 +367,7 @@ async def run(
     per_query = max(5, max_papers // max(len(all_queries), 1))
     src_list = sources or list(sources_set)
 
-    tasks = [
-        _search_one(pipeline, q, src_list, per_query)
-        for q in all_queries
-    ]
+    tasks = [_search_one(pipeline, q, src_list, per_query) for q in all_queries]
     results = await asyncio.gather(*tasks, return_exceptions=True)
 
     raw_papers: list[dict[str, Any]] = []
@@ -324,16 +396,18 @@ async def run(
     # Step 7: Format output
     result_papers = []
     for p in papers:
-        result_papers.append({
-            "doi": p.get("doi", ""),
-            "title": p.get("title", ""),
-            "year": p.get("year", 0),
-            "journal": p.get("journal", ""),
-            "source": p.get("source", ""),
-            "citation_count": p.get("citation_count", 0),
-            "authors": p.get("authors", []),
-            "abstract": (p.get("abstract") or "")[:300],
-        })
+        result_papers.append(
+            {
+                "doi": p.get("doi", ""),
+                "title": p.get("title", ""),
+                "year": p.get("year", 0),
+                "journal": p.get("journal", ""),
+                "source": p.get("source", ""),
+                "citation_count": p.get("citation_count", 0),
+                "authors": p.get("authors", []),
+                "abstract": (p.get("abstract") or "")[:300],
+            }
+        )
 
     years = [p["year"] for p in result_papers if p["year"]]
 
@@ -359,18 +433,18 @@ async def _search_one(
     try:
         raw = await pipeline.search(query, sources=sources, limit=limit)
         for p in raw:
-            papers.append({
-                "doi": getattr(p, "doi", None) or "",
-                "title": getattr(p, "title", "") or "",
-                "year": getattr(p, "year", 0) or 0,
-                "journal": getattr(p, "journal", "") or "",
-                "source": getattr(p, "source", "") or "",
-                "citation_count": getattr(p, "citations_count", 0) or 0,
-                "authors": [
-                    a.full or a.family for a in getattr(p, "authors", []) if a
-                ][:5],
-                "abstract": getattr(p, "abstract", "") or "",
-            })
+            papers.append(
+                {
+                    "doi": getattr(p, "doi", None) or "",
+                    "title": getattr(p, "title", "") or "",
+                    "year": getattr(p, "year", 0) or 0,
+                    "journal": getattr(p, "journal", "") or "",
+                    "source": getattr(p, "source", "") or "",
+                    "citation_count": getattr(p, "citations_count", 0) or 0,
+                    "authors": [a.full or a.family for a in getattr(p, "authors", []) if a][:5],
+                    "abstract": getattr(p, "abstract", "") or "",
+                }
+            )
     except Exception as e:
         logger.debug("Search failed for %r: %s", query, e)
     return papers

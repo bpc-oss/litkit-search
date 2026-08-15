@@ -17,11 +17,8 @@ import httpx
 logger = logging.getLogger(__name__)
 
 OPENALEX_BASE = "https://api.openalex.org/works"
-MAX_PAPERS = 20          # 每个方向最多返回
-_OPENALEX_SELECT = (
-    "id,doi,title,publication_year,cited_by_count,"
-    "authorships,open_access,keywords"
-)
+MAX_PAPERS = 20  # 每个方向最多返回
+_OPENALEX_SELECT = "id,doi,title,publication_year,cited_by_count,authorships,open_access,keywords"
 _OPENALEX_SELECT_WITH_REFS = f"{_OPENALEX_SELECT},referenced_works"
 
 
@@ -177,7 +174,7 @@ async def _fetch_references(doi: str) -> list[dict[str, Any]]:
             # Fetch in batches
             all_refs: list[dict[str, Any]] = []
             for i in range(0, len(bare_ids), 25):
-                batch = bare_ids[i:i + 25]
+                batch = bare_ids[i : i + 25]
                 batch_refs = await _fetch_works_batch(batch)
                 all_refs.extend(batch_refs)
 
@@ -245,27 +242,27 @@ def _parse_openalex_results(results: list[dict[str, Any]]) -> list[dict[str, Any
     papers: list[dict[str, Any]] = []
     for work in results:
         doi = (work.get("doi") or "").replace("https://doi.org/", "")
-        papers.append({
-            "doi": doi,
-            "title": work.get("title", "") or "",
-            "year": work.get("publication_year", 0) or 0,
-            "journal": "",
-            "source": "openalex",
-            "citation_count": work.get("cited_by_count", 0) or 0,
-            "authors": tuple(
-                a.get("author", {}).get("display_name", "")
-                for a in work.get("authorships", [])[:8]
-                if a.get("author")
-            ),
-            "abstract": "",
-            "keywords": tuple(
-                kw.get("display_name", "")
-                for kw in work.get("keywords", [])[:10]
-                if kw.get("display_name")
-            ),
-            "is_open_access": bool(
-                work.get("open_access", {}).get("is_oa", False)
-            ),
-            "from_citation_chain": True,
-        })
+        papers.append(
+            {
+                "doi": doi,
+                "title": work.get("title", "") or "",
+                "year": work.get("publication_year", 0) or 0,
+                "journal": "",
+                "source": "openalex",
+                "citation_count": work.get("cited_by_count", 0) or 0,
+                "authors": tuple(
+                    a.get("author", {}).get("display_name", "")
+                    for a in work.get("authorships", [])[:8]
+                    if a.get("author")
+                ),
+                "abstract": "",
+                "keywords": tuple(
+                    kw.get("display_name", "")
+                    for kw in work.get("keywords", [])[:10]
+                    if kw.get("display_name")
+                ),
+                "is_open_access": bool(work.get("open_access", {}).get("is_oa", False)),
+                "from_citation_chain": True,
+            }
+        )
     return papers

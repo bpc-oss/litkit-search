@@ -1,4 +1,4 @@
-﻿"""CORE API â€” 250M+ OA papers from institutional repositories.
+"""CORE API â€” 250M+ OA papers from institutional repositories.
 
 Free tier: https://core.ac.uk/services/api/
 """
@@ -91,4 +91,3 @@ class CORE(SearchSource):
             subjects=tuple(r.get("subjects", [])),
             keywords=tuple(r.get("keywords", [])),
         )
-

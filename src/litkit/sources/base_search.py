@@ -1,4 +1,4 @@
-﻿"""BASE (Bielefeld Academic Search Engine) â€” 240M+ documents.
+"""BASE (Bielefeld Academic Search Engine) â€” 240M+ documents.
 
 API: https://api.base-search.net/
 Open access, no key required (polite use).
@@ -83,4 +83,3 @@ class BASE(SearchSource):
             source=self.name,
             subjects=tuple(d.get("dcsubject", [])),
         )
-

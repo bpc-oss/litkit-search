@@ -1,4 +1,5 @@
-﻿"""CSL-JSON exporter (citeproc schema)."""
+"""CSL-JSON exporter (citeproc schema)."""
+
 from __future__ import annotations
 
 import json
@@ -27,8 +28,7 @@ def to_csl(paper: Paper) -> dict[str, Any]:
         "id": paper.doi or paper.id,
         "type": csl_type,
         "author": [
-            {"given": a.given, "family": a.family}
-            for a in paper.authors if a.family or a.given
+            {"given": a.given, "family": a.family} for a in paper.authors if a.family or a.given
         ],
         "title": paper.title,
         "container-title": paper.venue.name,

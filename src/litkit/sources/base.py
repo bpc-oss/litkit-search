@@ -33,9 +33,7 @@ class SearchSource(ABC):
         self._bucket: TokenBucket = bucket_for(self.rate_limit_key or self.name)
 
     @abstractmethod
-    async def search(
-        self, query: str, limit: int = 20, **kwargs: Any
-    ) -> SearchResult:
+    async def search(self, query: str, limit: int = 20, **kwargs: Any) -> SearchResult:
         """Search the source for *query*.
 
         Returns a SearchResult with papers sorted by relevance (source
