@@ -1,0 +1,15 @@
+# gitleaks configuration for litkit-search
+# Extends the default ruleset with an allowlist for clearly-fake test fixtures.
+
+title = "litkit-search gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Fake API keys used in unit-test fixtures (not real credentials)"
+regexes = [
+    "ML0C4PBP3620FEA1",
+    "scopus-key-123",
+    "openalex-key-456",
+]

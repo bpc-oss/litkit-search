@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Project artifacts
+library/
+*.pdf
+*.ris
+*.db
+
+# Cache
+.litkit/
+cache/
+
+# Test artifacts
+htmlcov/
+.coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv-test/
+
+# Secrets / session files (never commit)
+*.cookies.txt
+*_cookies.json
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Scratch / logs
+/_*.py
+/batch_*.py
+/_*.json
+*.log
+/_*.html
+
+# Prep workspace (this repo's private planning area)
+_prep/
