@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2026-08
 
 ### Added
-- Initial open-source release of `litkit` (published as `litkit-search` on PyPI).
+- Initial open-source release of `litkit` (distributed as `litkit-search` on
+  GitHub; PyPI publishing planned).
 - Multi-source academic literature search across 25 sources (arXiv, PubMed,
   Crossref, Semantic Scholar, OpenAlex, DBLP, IEEE Xplore, Scopus, WoS, SSRN,
   bioRxiv, Zenodo, DOAJ, Scite, OpenCitations, and more) — zero API keys required
