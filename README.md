@@ -94,8 +94,8 @@ litkit speaks MCP, so any MCP-capable agent client can use it:
   See [docs/dsh-plugin.md](docs/dsh-plugin.md).
 
 ```bash
-# dsh install (after release):
-dsh plugin --profile web add "git+https://github.com/bpc-oss/litkit-search.git#subdirectory=adapters/dsh"
+# dsh install (GitHub-only distribution):
+dsh plugin --profile web add github:bpc-oss/litkit-search
 ```
 
 ## Legal notice
