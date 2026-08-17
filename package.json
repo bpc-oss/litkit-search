@@ -1,7 +1,42 @@
 {
-  "dependencies": {
-    "puppeteer-core": "^25.0.4",
-    "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  "name": "@bpshil/litkit-dsh",
+  "version": "0.1.0",
+  "description": "DeepSeek Harness (dsh) plugin adapter for litkit — academic literature search, citation audit, and download tools. Root npm package of the polyglot litkit-search monorepo, so `dsh plugin add github:bpc-oss/litkit-search` installs the adapter directly.",
+  "type": "module",
+  "main": "./adapters/dsh/lib/index.js",
+  "exports": {
+    ".": "./adapters/dsh/lib/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "adapters/dsh",
+    "README.md",
+    "LICENSE"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "plugin",
+    "litkit",
+    "literature",
+    "academic",
+    "search"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bpc-oss/litkit-search.git"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./adapters/dsh/cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-tools": "^0.1.0-rc.6"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }
