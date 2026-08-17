@@ -2,14 +2,15 @@
 
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![PyPI](https://img.shields.io/pypi/v/litkit-search)](https://pypi.org/project/litkit-search/)
+[![GitHub release](https://img.shields.io/github/v/release/bpc-oss/litkit-search)](https://github.com/bpc-oss/litkit-search/releases)
 [![CI](https://github.com/bpc-oss/litkit-search/actions/workflows/ci.yml/badge.svg)](https://github.com/bpc-oss/litkit-search/actions)
 
 Search, download, verify, and export scholarly literature from **25+ sources**
 with one CLI. Bulk retrieval with deduplication, citation audit for manuscripts,
 a multi-strategy PDF download chain, and agent-client integrations (MCP + DSH).
 
-> **Published on PyPI as `litkit-search`** (the import name and CLI stay `litkit`).
+> **Distributed on GitHub as `litkit-search`** — import name and CLI stay
+> `litkit`. PyPI publishing is planned.
 
 ---
 
@@ -33,11 +34,9 @@ a multi-strategy PDF download chain, and agent-client integrations (MCP + DSH).
 ## Quick start
 
 ```bash
-# 1. Install (Python >= 3.11)
-pip install litkit-search          # after PyPI release
-# or from source:
-#   git clone https://github.com/bpc-oss/litkit-search && cd litkit-search
-#   pip install .
+# 1. Install (Python >= 3.11) — GitHub-only distribution (PyPI planned)
+pip install "litkit-search @ git+https://github.com/bpc-oss/litkit-search.git"
+# or from source: git clone https://github.com/bpc-oss/litkit-search && pip install .
 
 # 2. (Optional) Configure API keys — most sources need none
 litkit sync-keys                   # interactive: point to a keys file

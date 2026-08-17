@@ -16,11 +16,16 @@ python --version    # need 3.11+; if missing, install from python.org / Homebrew
 
 ## 2. Install
 
-### A. From PyPI (after release)
+### A. From GitHub (recommended)
+
+Current distribution is GitHub-only (PyPI publishing is planned but not yet
+available):
 
 ```bash
-pip install litkit-search
+pip install "litkit-search @ git+https://github.com/bpc-oss/litkit-search.git"
 ```
+
+> Requires `git` on PATH. For a pinned version, append `@v0.1.0` to the URL.
 
 ### B. From source (development / latest)
 
@@ -45,7 +50,8 @@ pip install dist/litkit_search-*.whl
 
 ```bash
 uv venv --python 3.11
-uv pip install litkit-search          # or: uv pip install -e .  (from source)
+uv pip install "litkit-search @ git+https://github.com/bpc-oss/litkit-search.git"
+# or from source: uv pip install -e .
 ```
 
 ### E. With conda
@@ -53,7 +59,7 @@ uv pip install litkit-search          # or: uv pip install -e .  (from source)
 ```bash
 conda create -n litkit python=3.11
 conda activate litkit
-pip install litkit-search
+pip install "litkit-search @ git+https://github.com/bpc-oss/litkit-search.git"
 ```
 
 ## 3. Optional extras

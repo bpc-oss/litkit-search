@@ -1,5 +1,9 @@
 # Publishing & releases
 
+> **Current distribution: GitHub-only.** PyPI publishing (`release.yml`) is
+> prepared but unused until the maintainer opts in. The steps below stay valid
+> for whenever that happens.
+
 ## Pre-publish checklist (run before every release / before going public)
 
 1. **Secrets scan**: `gitleaks detect --source . --redact` → `no leaks found`.
