@@ -11,18 +11,20 @@ DeepSeek Harness (dsh) plugin adapter for [litkit](../README.md) — registers
 
 ## Install
 
-> Distribution is GitHub-only. The adapter is not yet on npm; install it from
-> a local checkout of the monorepo:
+> Distribution is GitHub-only. The adapter is the **root npm package** of the
+> monorepo, so it installs with one command:
+
+```bash
+dsh plugin --profile web add github:bpc-oss/litkit-search
+```
+
+Local development (from a checkout):
 
 ```bash
 git clone https://github.com/bpc-oss/litkit-search.git
 cd litkit-search
-dsh plugin --profile web add "adapters/dsh"      # relative to the checkout
+dsh plugin --profile web add "adapters/dsh"
 ```
-
-> pnpm (used by `dsh plugin`) does not support `#subdirectory=` git fragments,
-> so git-URL installs of this monorepo subdirectory are not supported — use a
-> local path (or the npm package once published).
 
 Restart `dsh web`. The model then sees `litkit_*` tools; guidance lives in
 [SKILL.md](SKILL.md).

@@ -18,7 +18,10 @@ profile (web / headless / custom).
 Prerequisites: `litkit` CLI on PATH (`pip install "litkit-search @ git+https://github.com/bpc-oss/litkit-search.git"`), Node ≥ 20.
 
 ```bash
-# From a local checkout of the monorepo (GitHub-only distribution):
+# Canonical (GitHub-only distribution):
+dsh plugin --profile web add github:bpc-oss/litkit-search
+
+# Or from a local checkout (development):
 git clone https://github.com/bpc-oss/litkit-search.git
 cd litkit-search
 dsh plugin --profile web add "adapters/dsh"
