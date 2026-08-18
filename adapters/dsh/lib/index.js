@@ -10,6 +10,11 @@
 
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
+// defineTool 会把 parameters 编译为合法 JSON Schema（`{}` → `{type:"object",
+// properties:{}}`）。裸 `ctx.tools.register({parameters: {}})` 会原样透传空对象，
+// 无参工具转出 `type: null` 的非法 schema，本地 vLLM 路由直接 400 拒绝
+// （2026-08-18 实测：`Invalid schema for function 'litkit_doctor'`）。
+import { defineTool } from "@deepseek-ai/dsh-tools";
 
 const execFileP = promisify(execFile);
 const TOOL_TIMEOUT_MS = 120_000;
@@ -38,7 +43,7 @@ function friendlyError(err) {
 }
 
 function jsonTool(name, description, parameters, buildArgs) {
-  return {
+  return defineTool({
     name,
     description,
     parameters,
@@ -55,7 +60,7 @@ function jsonTool(name, description, parameters, buildArgs) {
       }
       return JSON.stringify(data, null, 2);
     },
-  };
+  });
 }
 
 export function apply(ctx) {
@@ -117,33 +122,35 @@ export function apply(ctx) {
     ),
   );
 
-  ctx.tools.register({
-    name: "litkit_verify",
-    description:
-      "Verify references in a manuscript (.docx/.pdf). Requires anystyle (gem install anystyle) for .docx, or GROBID for .pdf — missing tools return a readable error, never a silent empty result.",
-    parameters: {
-      manuscript: { type: "string", required: true, description: "Path to the .docx or .pdf manuscript." },
-      output: { type: "string", description: "Output directory for the audit report." },
-    },
-    output: {
-      schema: { type: "string", description: "CLI output of the verify command." },
-      render: (_args, value) => [{ type: "text", text: value }],
-    },
-    async execute(args) {
-      const argv = ["verify", args.manuscript];
-      if (args.output) argv.push("-o", args.output);
-      try {
-        const { stdout } = await execFileP("litkit", argv, {
-          timeout: TOOL_TIMEOUT_MS,
-          maxBuffer: MAX_BUFFER,
-          windowsHide: true,
-        });
-        return stdout.trim();
-      } catch (err) {
-        throw friendlyError(err);
-      }
-    },
-  });
+  ctx.tools.register(
+    defineTool({
+      name: "litkit_verify",
+      description:
+        "Verify references in a manuscript (.docx/.pdf). Requires anystyle (gem install anystyle) for .docx, or GROBID for .pdf — missing tools return a readable error, never a silent empty result.",
+      parameters: {
+        manuscript: { type: "string", required: true, description: "Path to the .docx or .pdf manuscript." },
+        output: { type: "string", description: "Output directory for the audit report." },
+      },
+      output: {
+        schema: { type: "string", description: "CLI output of the verify command." },
+        render: (_args, value) => [{ type: "text", text: value }],
+      },
+      async execute(args) {
+        const argv = ["verify", args.manuscript];
+        if (args.output) argv.push("-o", args.output);
+        try {
+          const { stdout } = await execFileP("litkit", argv, {
+            timeout: TOOL_TIMEOUT_MS,
+            maxBuffer: MAX_BUFFER,
+            windowsHide: true,
+          });
+          return stdout.trim();
+        } catch (err) {
+          throw friendlyError(err);
+        }
+      },
+    })
+  );
 
   ctx.systemPrompt.section({
     name: "tool:litkit",
