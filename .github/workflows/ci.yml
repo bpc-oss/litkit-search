@@ -1,4 +1,4 @@
-name: CI
+﻿name: CI
 
 on:
   push:
@@ -80,8 +80,8 @@ jobs:
         run: |
           python -m venv .venv-smoke
           .venv-smoke/bin/pip install dist/litkit_search-*.whl
-          .venv-smoke/bin/litkit --help >/dev/null
-          .venv-smoke/bin/litkit sources | grep -q arxiv
+          .venv-smoke/bin/litkit-dsh --help >/dev/null
+          .venv-smoke/bin/litkit-dsh sources | grep -q arxiv
 
   e2e:
     name: e2e (main only)

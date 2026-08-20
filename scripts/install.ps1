@@ -1,4 +1,4 @@
-# litkit installer — Windows (PowerShell)
+﻿# litkit-dsh installer — Windows (PowerShell)
 # Usage:
 #   .\scripts\install.ps1                # install from PyPI (after release)
 #   .\scripts\install.ps1 -Source wheel  # install from local dist\*.whl
@@ -10,7 +10,7 @@ param(
 )
 $ErrorActionPreference = "Stop"
 
-Write-Host "== litkit installer (Windows) ==" -ForegroundColor Cyan
+Write-Host "== litkit-dsh installer (Windows) ==" -ForegroundColor Cyan
 
 # 1. Python check (>= 3.11)
 $py = Get-Command python -ErrorAction SilentlyContinue
@@ -37,5 +37,5 @@ switch ($Source) {
 }
 
 # 4. Environment self-check
-Write-Host "`n== litkit doctor ==" -ForegroundColor Cyan
-& (Join-Path (Get-Location) ".venv\Scripts\litkit.exe") doctor
+Write-Host "`n== litkit-dsh doctor ==" -ForegroundColor Cyan
+& (Join-Path (Get-Location) ".venv\Scripts\litkit-dsh.exe") doctor

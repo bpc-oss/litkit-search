@@ -1,4 +1,4 @@
-# Publishing & releases
+﻿# Publishing & releases
 
 > **Current distribution: GitHub-only.** PyPI publishing (`release.yml`) is
 > prepared but unused until the maintainer opts in. The steps below stay valid
@@ -17,7 +17,7 @@
 5. **`.env.example` tracked, `.env` not**: `git ls-files | grep env` shows only
    `.env.example`.
 6. **Build**: `uv build` → wheel + sdist; clean venv install of the wheel;
-   `litkit --help` and `litkit sources` work.
+   `litkit-dsh --help` and `litkit-dsh sources` work.
 7. **Tests + quality**: `pytest tests/ -m "not e2e"` green; `ruff check`;
    `ruff format --check`; `mypy src/` clean (all covered by CI).
 8. **Docs**: CLI/behavior changes carry docs updates in the same PR.

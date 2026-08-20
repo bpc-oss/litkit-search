@@ -64,7 +64,7 @@ Issues = "https://github.com/bpc-oss/litkit-search/issues"
 Documentation = "https://github.com/bpc-oss/litkit-search/blob/main/README.md"
 
 [project.scripts]
-litkit = "litkit.cli:app"
+litkit-dsh = "litkit.cli:app"
 litkit-mcp = "litkit_mcp.server:main"
 
 [tool.ruff]

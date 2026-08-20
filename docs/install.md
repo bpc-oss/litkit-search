@@ -1,6 +1,6 @@
-# Installation Guide
+﻿# Installation Guide
 
-litkit requires **Python 3.11 or newer** and works on Windows, macOS, and Linux.
+litkit-dsh requires **Python 3.11 or newer** and works on Windows, macOS, and Linux.
 
 ## 1. Prerequisites
 
@@ -57,8 +57,8 @@ uv pip install "litkit-search @ git+https://github.com/bpc-oss/litkit-search.git
 ### E. With conda
 
 ```bash
-conda create -n litkit python=3.11
-conda activate litkit
+conda create -n litkit-dsh python=3.11
+conda activate litkit-dsh
 pip install "litkit-search @ git+https://github.com/bpc-oss/litkit-search.git"
 ```
 
@@ -73,7 +73,7 @@ pip install "litkit-search @ git+https://github.com/bpc-oss/litkit-search.git"
 ## 4. Verify
 
 ```bash
-litkit doctor
+litkit-dsh doctor
 ```
 
 You should see PASS for *python*, *core dependencies*, *sources registry*
@@ -87,6 +87,6 @@ Most sources work with **no API keys**. To enable higher rate limits / richer
 metadata, configure keys — see [configuration.md](configuration.md):
 
 ```bash
-litkit sync-keys            # interactive
+litkit-dsh sync-keys            # interactive
 # or copy .env.example to .env and fill in values
 ```

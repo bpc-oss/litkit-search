@@ -24,7 +24,7 @@ from litkit.core.pipeline import Pipeline
 from litkit.sources import _registry, all_sources
 
 app = typer.Typer(
-    name="litkit",
+    name="litkit-dsh",
     help="Unified academic literature search toolkit",
     rich_markup_mode=None,
 )

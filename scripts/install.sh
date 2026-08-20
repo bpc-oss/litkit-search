@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-# litkit installer — macOS / Linux
+﻿#!/usr/bin/env bash
+# litkit-dsh installer — macOS / Linux
 # Usage: ./scripts/install.sh [pypi|wheel|git] [git-url]
 set -euo pipefail
 
@@ -7,7 +7,7 @@ SOURCE="${1:-pypi}"
 GIT_URL="${2:-https://github.com/bpshil/litkit-search.git}"
 PYTHON="${PYTHON:-python3}"
 
-echo "== litkit installer (macOS/Linux) =="
+echo "== litkit-dsh installer (macOS/Linux) =="
 
 # 1. Python check (>= 3.11)
 if ! command -v "$PYTHON" >/dev/null 2>&1; then
@@ -37,5 +37,5 @@ case "$SOURCE" in
 esac
 
 # 4. Environment self-check
-echo; echo "== litkit doctor =="
-.venv/bin/litkit doctor
+echo; echo "== litkit-dsh doctor =="
+.venv/bin/litkit-dsh doctor

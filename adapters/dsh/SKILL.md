@@ -1,4 +1,4 @@
-# litkit skill — academic literature search for DSH
+﻿# litkit-dsh skill — academic literature search for DSH
 
 Use the `litkit_*` tools when the task involves:
 

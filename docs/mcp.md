@@ -1,4 +1,4 @@
-# MCP server — use litkit from any agent client
+﻿# MCP server — use litkit-dsh from any agent client
 
 `litkit-search[mcp]` installs a Model Context Protocol (MCP) server
 (`litkit-mcp`) exposing six tools:
@@ -26,7 +26,7 @@ Edit `claude_desktop_config.json` (Claude → Settings → Developer → Edit Co
 ```json
 {
   "mcpServers": {
-    "litkit": {
+    "litkit-dsh": {
       "command": "litkit-mcp",
       "args": []
     }
@@ -34,12 +34,12 @@ Edit `claude_desktop_config.json` (Claude → Settings → Developer → Edit Co
 }
 ```
 
-Restart Claude Desktop, then ask: *"search literature for X with litkit"*.
+Restart Claude Desktop, then ask: *"search literature for X with litkit-dsh"*.
 
 ## Codex (OpenAI)
 
 ```bash
-codex mcp add litkit -- litkit-mcp
+codex mcp add litkit-dsh -- litkit-mcp
 # verify: codex mcp list
 ```
 
@@ -50,7 +50,7 @@ Project `.cursor/mcp.json`:
 ```json
 {
   "mcpServers": {
-    "litkit": {
+    "litkit-dsh": {
       "command": "litkit-mcp",
       "args": []
     }
@@ -65,7 +65,7 @@ Project `.cursor/mcp.json`:
 ```json
 {
   "mcp": {
-    "litkit": {
+    "litkit-dsh": {
       "type": "stdio",
       "command": "litkit-mcp",
       "args": []
@@ -81,10 +81,10 @@ instance per MCP server to the profile's patch layer (e.g. append to
 `~/.dsh/profiles/web/cordis.patch.yml`):
 
 ```yaml
-- id: mcp-litkit
+- id: mcp-litkit-dsh
   name: '@deepseek-ai/dsh-mcp-client'
   config:
-    serverName: litkit
+    serverName: litkit-dsh
     transport: stdio
     command: litkit-mcp
 ```
@@ -96,8 +96,8 @@ instance per MCP server to the profile's patch layer (e.g. append to
 
 ## Notes
 
-- **Environment**: `litkit-mcp` must run in an environment where `litkit` is
-  importable (same Python/site-packages). If you installed litkit in a venv,
+- **Environment**: `litkit-mcp` must run in an environment where `litkit-dsh` is
+  importable (same Python/site-packages). If you installed litkit-dsh in a venv,
   point the client at `<venv>/bin/litkit-mcp` or activate the venv first.
 - **Verify tool**: reference extraction needs anystyle/GROBID — see
   [troubleshooting.md](troubleshooting.md). Missing tools return a readable

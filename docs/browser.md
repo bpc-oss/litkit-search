@@ -1,4 +1,4 @@
-# Browser-assisted downloads
+﻿# Browser-assisted downloads
 
 The PDF download chain includes a browser-assisted path for publishers that
 block plain HTTP clients (ScienceDirect, Wiley, Nature, MDPI, …). It uses:
@@ -32,7 +32,7 @@ python -m playwright install chromium
 ## Verify
 
 ```bash
-litkit doctor    # "browser chain" should show: node found; playwright installed
+litkit-dsh doctor    # "browser chain" should show: node found; playwright installed
 ```
 
 ## Troubleshooting

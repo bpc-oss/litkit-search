@@ -1,9 +1,9 @@
 // litkit dsh adapter — academic literature tools for DeepSeek Harness.
 //
-// Registers litkit_* tools that shell out to the `litkit` CLI (JSON output).
-// The CLI must be installed and on PATH: `pip install litkit-search`
-// (`litkit doctor` reports the environment; missing tools produce a readable
-// error instead of a silent failure).
+// Registers litkit_* tools that shell out to the `litkit-dsh` CLI (JSON
+// output). The CLI must be installed and on PATH: `pip install litkit-search`
+// (`litkit-dsh doctor` reports the environment; missing tools produce a
+// readable error instead of a silent failure).
 //
 // Imports of @deepseek-ai/* resolve against the dsh host installation, the
 // same way other out-of-tree bundles (dsh-bash-terminal, dsh-genui) load.
@@ -16,6 +16,11 @@ import { promisify } from "node:util";
 // （2026-08-18 实测：`Invalid schema for function 'litkit_doctor'`）。
 import { defineTool } from "@deepseek-ai/dsh-tools";
 
+// The OSS CLI is intentionally named `litkit-dsh` so it can coexist with a
+// locally installed original `litkit` without a console-script conflict.
+// Override with the LITKIT_BIN env var if the binary lives elsewhere.
+const LITKIT_BIN = process.env.LITKIT_BIN || "litkit-dsh";
+
 const execFileP = promisify(execFile);
 const TOOL_TIMEOUT_MS = 120_000;
 const MAX_BUFFER = 32 * 1024 * 1024;
@@ -24,7 +29,7 @@ export const name = "litkit";
 export const inject = ["tools", "systemPrompt"];
 
 async function litkitJson(args) {
-  const { stdout } = await execFileP("litkit", args, {
+  const { stdout } = await execFileP(LITKIT_BIN, args, {
     timeout: TOOL_TIMEOUT_MS,
     maxBuffer: MAX_BUFFER,
     windowsHide: true,
@@ -37,8 +42,8 @@ function friendlyError(err) {
   const detail = stderr || err?.message || String(err);
   return new Error(
     `litkit CLI error: ${String(detail).slice(0, 2000)}\n` +
-      "Ensure the litkit CLI is installed and on PATH " +
-      "(pip install litkit-search), then run `litkit doctor` for diagnostics.",
+      "Ensure the litkit-dsh CLI is installed and on PATH " +
+      "(pip install litkit-search), then run `litkit-dsh doctor` for diagnostics.",
   );
 }
 
@@ -139,7 +144,7 @@ export function apply(ctx) {
         const argv = ["verify", args.manuscript];
         if (args.output) argv.push("-o", args.output);
         try {
-          const { stdout } = await execFileP("litkit", argv, {
+          const { stdout } = await execFileP(LITKIT_BIN, argv, {
             timeout: TOOL_TIMEOUT_MS,
             maxBuffer: MAX_BUFFER,
             windowsHide: true,

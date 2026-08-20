@@ -1,11 +1,11 @@
-# Configuration
+﻿# Configuration
 
 ## Zero-key out of the box
 
 The following sources work immediately with **no API keys**: arXiv, PubMed,
 Crossref, Semantic Scholar, OpenAlex, DBLP, DOAJ, Zenodo, bioRxiv, ChemRxiv,
 SSRN, Scite, OpenCitations, ACM, BASE, CORE, Dimensions, Lens, Springer, ORCID,
-and more (25 sources total — `litkit sources` lists them with their key
+and more (25 sources total — `litkit-dsh sources` lists them with their key
 requirement).
 
 ## Optional API keys
@@ -15,7 +15,7 @@ Keys unlock higher rate limits / richer metadata. Configure them either way:
 ### Interactive
 
 ```bash
-litkit sync-keys            # point it at a text file with KEY=VALUE lines
+litkit-dsh sync-keys            # point it at a text file with KEY=VALUE lines
 ```
 
 ### Manual (.env)
@@ -51,11 +51,11 @@ For paywalled publisher PDFs your institution subscribes to:
 
 ## Chinese literature (zh-search)
 
-`litkit zh-search` targets Chinese academic sources and requires institutional
+`litkit-dsh zh-search` targets Chinese academic sources and requires institutional
 library access (e.g. SZU library). Configure the same institutional variables
 above. Without institutional access the command will report what is missing.
 
-## Interpreting `litkit doctor`
+## Interpreting `litkit-dsh doctor`
 
 | Status | Meaning |
 |---|---|
